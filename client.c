@@ -2,7 +2,7 @@
 	Simple winsock client 
 */
 
-#include "Cliente.h"
+#include "client.h"
 
 #pragma comment(lib,"ws2_32.lib") 
 #pragma warning(disable : 4996)
