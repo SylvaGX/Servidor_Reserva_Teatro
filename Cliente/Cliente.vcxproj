@@ -145,7 +145,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client.c" />
     <ClCompile Include="Cliente.cpp" />
   </ItemGroup>
   <ItemGroup>

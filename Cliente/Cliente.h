@@ -1,4 +1,4 @@
 #pragma once
 
 #include "resource.h"
-#include <winsock.h>
+#include <WinSock2.h>
