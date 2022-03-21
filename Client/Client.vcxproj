@@ -120,16 +120,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TestForm.cpp" />
+    <ClCompile Include="Cliente.cpp" />
+    <ClCompile Include="ClienteConnected.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TestForm.h">
+    <ClInclude Include="Cliente.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="ClienteConnected.h">
       <FileType>CppForm</FileType>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TestForm.resx">
-      <DependentUpon>TestForm.h</DependentUpon>
+    <EmbeddedResource Include="Cliente.resx">
+      <DependentUpon>Cliente.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ClienteConnected.resx">
+      <DependentUpon>ClienteConnected.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,4 @@
-#include "TestForm.h"
+#include "Cliente.h"
 
 using namespace System;
 
@@ -14,7 +14,7 @@ void main(array<String^>^ args)
 
     Application::SetCompatibleTextRenderingDefault(false);
 
-    Client::TestForm form;
+    Client::Cliente form;
 
     Application::Run(% form);
 
