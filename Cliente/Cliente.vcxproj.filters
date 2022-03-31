@@ -15,18 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cliente.cpp">
+    <ClCompile Include="client.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ClienteConnected.cpp">
+    <ClCompile Include="Teatro.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cliente.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClienteConnected.h">
+    <ClInclude Include="Teatro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
