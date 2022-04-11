@@ -1,6 +1,6 @@
 #include "Teatro.h"
 #include <winsock2.h>
-
+#include <semaphore>
 
 #pragma comment(lib,"ws2_32.lib")
 #pragma warning(disable : 4996)
@@ -13,11 +13,12 @@ int main(int argc, char* argv[])
 	struct sockaddr_in server;
 	char message[1024], server_reply[2000];
 	int ws_result;
-	char local[50] = "Vila Real\0";
+	char local[50] = "Braganca\0";
 	char strRec[1024];
 	int bytesReceived = 0;
 	int cont = 1;
 	int err = 0;
+	int contador = 0;
 	char  x;
 	Teatro** t = NULL;
 	Teatro** auxT = NULL;
@@ -78,7 +79,6 @@ int main(int argc, char* argv[])
 
 			if (ws_result < 0)
 			{
-				puts("Send failed");
 				return 1;
 			}
 
@@ -105,7 +105,6 @@ int main(int argc, char* argv[])
 			ws_result = send(s, local, strlen(local), 0);
 			if (ws_result < 0)
 			{
-				puts("Send failed");
 				cont = 0;
 				break;
 			}
@@ -119,8 +118,50 @@ int main(int argc, char* argv[])
 			}
 			if (bytesReceived > 0) {
 				if (strcmp(strRec, "100 OK") == 0) {
+					//id 100ok nometeatro 100ok numespetaculos 100ok loc 100ok numvisitas 100ok
+					// 0         1                    2                3        4
+					printf("\n");
+					ZeroMemory(strRec, 1024);
+					bytesReceived = recv(s, strRec, 1024, 0);
+					if (bytesReceived == SOCKET_ERROR) {
+						printf("\nReceive error!\n");
+						cont = 0;
+						err = 1;
+						break;
+					}
+					else if (bytesReceived == 0) {
+						err = 1;
 
-					puts("Reply received\n");
+
+					}
+
+					while ((strcmp(strRec, "END") != 0)) {
+						if (contador < 4) {
+							printf("%s | ", strRec);
+							ZeroMemory(message, 1024);
+							strcpy(message, "100 OK");
+							send(s, message, strlen(message), 0);
+							contador++;
+							ZeroMemory(strRec, 1024);
+							bytesReceived = recv(s, strRec, 1024, 0);
+
+						}
+						else if (contador == 4) {
+							contador = 0;
+							printf("%s\n", strRec);
+							ZeroMemory(message, 1024);
+							strcpy(message, "100 OK");
+							send(s, message, strlen(message), 0);
+							ZeroMemory(strRec, 1024);
+							bytesReceived = recv(s, strRec, 1024, 0);
+
+						}
+
+					}
+
+					ZeroMemory(message, 1024);
+					strcpy(message, "100 OK");
+					send(s, message, strlen(message), 0);
 				}
 				else
 				{
@@ -129,29 +170,6 @@ int main(int argc, char* argv[])
 
 				}
 			}
-			do {
-				ZeroMemory(strRec, 1024);
-				bytesReceived = recv(s, strRec, 1024, 0);
-				if (bytesReceived == SOCKET_ERROR) {
-					printf("\nReceive error!\n");
-					cont = 0;
-					break;
-				}
-				if (bytesReceived > 0) {
-					puts(strRec);
-					ZeroMemory(message, 1024);
-					strcpy(message, "100 OK");
-					send(s, message, strlen(message), 0);
-
-
-				}
-				if (bytesReceived == 0) {
-					puts("ola!\n");
-
-
-				}
-
-			} while ((strcmp(strRec, "END") != 0));
 			break;
 
 		case '2':
