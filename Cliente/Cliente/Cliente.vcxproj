@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f271014f-c4ed-427d-8896-e50a786cae7b}</ProjectGuid>
+    <ProjectGuid>{8a9d39f2-3f80-4eb4-8da2-f010dbb2ede3}</ProjectGuid>
     <RootNamespace>Cliente</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -139,11 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="client.c" />
-    <ClCompile Include="Teatro.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Teatro.h" />
+    <ClCompile Include="..\client.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
