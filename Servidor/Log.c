@@ -15,7 +15,9 @@ void InfoLog(const char* msg)
         time_t now;
         time(&now);
         fprintf(log, "%s [%s]: %s\n", ctime(&now), "Info", msg);
+        printf("\033[0; 37m");
         printf("%s [%s]: %s\n", ctime(&now), "Info", msg);
+        printf("\033[0m");
 
         fclose(log);
     }
@@ -40,7 +42,9 @@ void WarningLog(const char* msg)
         time_t now;
         time(&now);
         fprintf(log, "%s [%s]: %s\n", ctime(&now), "Warning", msg);
+        printf("\033[0; 33m");
         printf("%s [%s]: %s\n", ctime(&now), "Warning", msg);
+        printf("\033[0m");
 
         fclose(log);
     }
@@ -64,7 +68,9 @@ void ErrorLog(const char* msg)
         time_t now;
         time(&now);
         fprintf(log, "%s [%s]: %s\n", ctime(&now), "Error", msg);
+        printf("\033[0; 31m");
         printf("%s [%s]: %s\n", ctime(&now), "Error", msg);
+        printf("\033[0m");
 
         fclose(log);
     }

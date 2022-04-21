@@ -134,10 +134,29 @@ Teatro** InitTeatros(float lat, float longi, Client *client)
 			
 			fscanf(theaters, "%d,", &id);
 
-			id = isTeatroVisitado(id, client);
-
-			if (id != -1)
+			isTrue = 1;
+			while (isTrue)
 			{
+				c = fgetc(theaters);
+				switch (c)
+				{
+				case EOF:
+					isTrue = 0;
+					notEOF = 0;
+					break;
+				case ',':
+					isTrue = 0;
+					break;
+				default:
+					tamNome++;
+					strncat(nome, &c, 1);
+					break;
+				}
+			}
+
+			if (notEOF) {
+				fscanf(theaters, "%d,", &espetaculos);
+
 				isTrue = 1;
 				while (isTrue)
 				{
@@ -152,71 +171,43 @@ Teatro** InitTeatros(float lat, float longi, Client *client)
 						isTrue = 0;
 						break;
 					default:
-						tamNome++;
-						strncat(nome, &c, 1);
+						tamLoc++;
+						strncat(loc, &c, 1);
 						break;
 					}
 				}
 
 				if (notEOF) {
-					fscanf(theaters, "%d,", &espetaculos);
 
-					isTrue = 1;
-					while (isTrue)
+					fscanf(theaters, "%d\n", &visitas);
+
+					tamTeatros++;
+					auxTeatros = calloc(tamTeatros, sizeof(Teatro*));
+					if (auxTeatros != NULL)
 					{
-						c = fgetc(theaters);
-						switch (c)
+						for (unsigned int i = 0; i < (tamTeatros-1); i++)
 						{
-						case EOF:
-							isTrue = 0;
-							notEOF = 0;
-							break;
-						case ',':
-							isTrue = 0;
-							break;
-						default:
-							tamLoc++;
-							strncat(loc, &c, 1);
-							break;
+
+							*(auxTeatros + i) = *(teatros + i);
+
 						}
-					}
 
-					if (notEOF) {
+						free(teatros);
 
-						fscanf(theaters, "%d\n", &visitas);
-
-						tamTeatros++;
-						auxTeatros = calloc(tamTeatros, sizeof(Teatro*));
-						if (auxTeatros != NULL)
-						{
-							for (unsigned int i = 0; i < (tamTeatros-1); i++)
-							{
-
-								*(auxTeatros + i) = *(teatros + i);
-
-							}
-
-							free(teatros);
-
-							*(auxTeatros + (tamTeatros - 1)) = Create_Teatro(id, nome, espetaculos, loc, visitas);
-							teatros = auxTeatros;
-							auxTeatros = NULL;
-						}
+						*(auxTeatros + (tamTeatros - 1)) = Create_Teatro(id, nome, espetaculos, loc, visitas);
+						teatros = auxTeatros;
+						auxTeatros = NULL;
 					}
 				}
+			}
 
-				memset(nome, '\0', 100);
-				tamNome = 0;
-				memset(loc, '\0', 100);
-				tamLoc = 0;
-				id = -1;
-				espetaculos = -1;
-				visitas = -1;
-			}
-			else {
-				while ((c= fgetc(theaters)) != '\n' && c != EOF);
-				
-			}
+			memset(nome, '\0', 100);
+			tamNome = 0;
+			memset(loc, '\0', 100);
+			tamLoc = 0;
+			id = -1;
+			espetaculos = -1;
+			visitas = -1;
 		}
 
 		fclose(theaters);

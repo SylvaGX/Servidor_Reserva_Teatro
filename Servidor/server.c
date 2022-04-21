@@ -27,6 +27,41 @@ int sendData(Client* client, char* data) {
 	return ws_result;
 }
 
+void updateVisitas(Teatro **teatros, int id, Client *client) {
+	
+	FILE* f;
+	char logMsg[150];
+	memset(logMsg, '\0', 150);
+
+	f = fopen("teatros.csv", "w");
+
+	memset(logMsg, '\0', 150);
+
+	snprintf(logMsg, 150, "A incrementar o numero de visitados. Thread: %d", client->threadID);
+
+	InfoLog(logMsg);
+
+	if (f != NULL)
+	{
+
+		int numVis = 0;
+
+		for (size_t i = 0; i < tamTeatros; i++)
+		{
+			if (id == getId(teatros[i]))
+			{
+				fprintf(f, "%d,%s,%d,%s,%d\n", getId(teatros[i]), getTeatroNome(teatros[i]), getEspetaculos(teatros[i]), getLocalizacao(teatros[i]), (getVisitas(teatros[i]) + 1));
+			}
+			else
+			{
+				fprintf(f, "%d,%s,%d,%s,%d\n", getId(teatros[i]), getTeatroNome(teatros[i]), getEspetaculos(teatros[i]), getLocalizacao(teatros[i]), getVisitas(teatros[i]));
+			}
+		}
+
+		fclose(f);
+	}
+}
+
 int compareTeatrosVisitados(const void* a, const void* b)
 {
 	return (*(int*)a - *(int*)b);
@@ -497,209 +532,216 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
+				int auxId = -1;
+				int isSair = 0;
+
 				for (size_t i = 0; i < tamTeatros; i++)
 				{
 					/*-------Loop------*/
 
-					value = getId(teatros[i]);
-					size = (int)((ceil(log10(value)) + 1) * sizeof(char));
+					auxId = isTeatroVisitado(getId(teatros[i]), client);
 
-					memset(str, '\0', 1024);
-
-					itoa(value, str, 10);
-
-					sendData(client, str);
-
-					ZeroMemory(revMsg, 1024);
-					bytesReceived = recv(client->socket, revMsg, 1024, 0);
-
-					if (bytesReceived == SOCKET_ERROR) {
-						memset(logMsg, '\0', 150);
-
-						snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
-
-						WarningLog(logMsg);
-						break;
-					}
-
-					if (bytesReceived == 0) {
-						memset(logMsg, '\0', 150);
-
-						snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
-
-						InfoLog(logMsg);
-						break;
-					}
-
-					if (bytesReceived > 0)
+					if (auxId != -1)
 					{
-						if (strcmp(revMsg, "100 OK") == 0) {
+						value = auxId;
+						size = (int)((ceil(log10(value)) + 1) * sizeof(char));
 
-							sendData(client, getTeatroNome(teatros[i]));
+						memset(str, '\0', 1024);
 
-							ZeroMemory(revMsg, 1024);
-							bytesReceived = recv(client->socket, revMsg, 1024, 0);
+						itoa(value, str, 10);
 
-							if (bytesReceived == SOCKET_ERROR) {
-								memset(logMsg, '\0', 150);
+						sendData(client, str);
 
-								snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+						ZeroMemory(revMsg, 1024);
+						bytesReceived = recv(client->socket, revMsg, 1024, 0);
 
-								WarningLog(logMsg);
-								break;
-							}
-
-							if (bytesReceived == 0) {
-								memset(logMsg, '\0', 150);
-
-								snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
-
-								InfoLog(logMsg);
-								break;
-							}
-
-							if (bytesReceived > 0)
-							{
-								if (strcmp(revMsg, "100 OK") == 0) {
-
-									//free(str);
-
-									value = getEspetaculos(teatros[i]);
-									size = (int)((ceil(log10(value)) + 1) * sizeof(char));
-
-									memset(str, '\0', 1024);
-
-									itoa(value, str, 10);
-
-									sendData(client, str);
-
-									ZeroMemory(revMsg, 1024);
-									bytesReceived = recv(client->socket, revMsg, 1024, 0);
-
-									if (bytesReceived == SOCKET_ERROR) {
-										memset(logMsg, '\0', 150);
-
-										snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
-
-										WarningLog(logMsg);
-										break;
-									}
-
-									if (bytesReceived == 0) {
-										memset(logMsg, '\0', 150);
-
-										snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
-
-										InfoLog(logMsg);
-										break;
-									}
-
-									if (bytesReceived > 0)
-									{
-										if (strcmp(revMsg, "100 OK") == 0) {
-
-											sendData(client, getLocalizacao(teatros[i]));
-
-											ZeroMemory(revMsg, 1024);
-											bytesReceived = recv(client->socket, revMsg, 1024, 0);
-
-											if (bytesReceived == SOCKET_ERROR) {
-												memset(logMsg, '\0', 150);
-
-												snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
-
-												WarningLog(logMsg);
-												break;
-											}
-
-											if (bytesReceived == 0) {
-												memset(logMsg, '\0', 150);
-
-												snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
-
-												InfoLog(logMsg);
-												break;
-											}
-
-											if (bytesReceived > 0)
-											{
-												if (strcmp(revMsg, "100 OK") == 0) {
-
-													value = getVisitas(teatros[i]);
-													size = (int)((ceil(log10(value)) + 1) * sizeof(char));
-
-													memset(str, '\0', 1024);
-
-													itoa(value, str, 10);
-
-													sendData(client, str);
-
-													ZeroMemory(revMsg, 1024);
-													bytesReceived = recv(client->socket, revMsg, 1024, 0);
-
-													if (bytesReceived == SOCKET_ERROR) {
-														memset(logMsg, '\0', 150);
-
-														snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
-
-														WarningLog(logMsg);
-														break;
-													}
-
-													if (bytesReceived == 0) {
-														memset(logMsg, '\0', 150);
-
-														snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
-
-														InfoLog(logMsg);
-														break;
-													}
-
-													if (bytesReceived > 0)
-													{
-														if (strcmp(revMsg, "100 OK") == 0) {
-
-
-
-														}
-													}
-												}
-												else {
-													memset(logMsg, '\0', 150);
-
-													snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
-
-													InfoLog(logMsg);
-												}
-											}
-										}
-										else {
-											memset(logMsg, '\0', 150);
-
-											snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
-
-											InfoLog(logMsg);
-										}
-									}
-								}
-								else {
-									memset(logMsg, '\0', 150);
-
-									snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
-
-									InfoLog(logMsg);
-								}
-							}
-						}
-						else {
+						if (bytesReceived == SOCKET_ERROR) {
 							memset(logMsg, '\0', 150);
 
-							snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
+							snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+
+							WarningLog(logMsg);
+							break;
+						}
+
+						if (bytesReceived == 0) {
+							memset(logMsg, '\0', 150);
+
+							snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
 
 							InfoLog(logMsg);
+							break;
+						}
+
+						if (bytesReceived > 0)
+						{
+							if (strcmp(revMsg, "100 OK") == 0) {
+
+								sendData(client, getTeatroNome(teatros[i]));
+
+								ZeroMemory(revMsg, 1024);
+								bytesReceived = recv(client->socket, revMsg, 1024, 0);
+
+								if (bytesReceived == SOCKET_ERROR) {
+									memset(logMsg, '\0', 150);
+
+									snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+
+									WarningLog(logMsg);
+									break;
+								}
+
+								if (bytesReceived == 0) {
+									memset(logMsg, '\0', 150);
+
+									snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
+
+									InfoLog(logMsg);
+									break;
+								}
+
+								if (bytesReceived > 0)
+								{
+									if (strcmp(revMsg, "100 OK") == 0) {
+
+										//free(str);
+
+										value = getEspetaculos(teatros[i]);
+										size = (int)((ceil(log10(value)) + 1) * sizeof(char));
+
+										memset(str, '\0', 1024);
+
+										itoa(value, str, 10);
+
+										sendData(client, str);
+
+										ZeroMemory(revMsg, 1024);
+										bytesReceived = recv(client->socket, revMsg, 1024, 0);
+
+										if (bytesReceived == SOCKET_ERROR) {
+											memset(logMsg, '\0', 150);
+
+											snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+
+											WarningLog(logMsg);
+											break;
+										}
+
+										if (bytesReceived == 0) {
+											memset(logMsg, '\0', 150);
+
+											snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
+
+											InfoLog(logMsg);
+											break;
+										}
+
+										if (bytesReceived > 0)
+										{
+											if (strcmp(revMsg, "100 OK") == 0) {
+
+												sendData(client, getLocalizacao(teatros[i]));
+
+												ZeroMemory(revMsg, 1024);
+												bytesReceived = recv(client->socket, revMsg, 1024, 0);
+
+												if (bytesReceived == SOCKET_ERROR) {
+													memset(logMsg, '\0', 150);
+
+													snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+
+													WarningLog(logMsg);
+													break;
+												}
+
+												if (bytesReceived == 0) {
+													memset(logMsg, '\0', 150);
+
+													snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
+
+													InfoLog(logMsg);
+													break;
+												}
+
+												if (bytesReceived > 0)
+												{
+													if (strcmp(revMsg, "100 OK") == 0) {
+
+														value = getVisitas(teatros[i]);
+														size = (int)((ceil(log10(value)) + 1) * sizeof(char));
+
+														memset(str, '\0', 1024);
+
+														itoa(value, str, 10);
+
+														sendData(client, str);
+
+														ZeroMemory(revMsg, 1024);
+														bytesReceived = recv(client->socket, revMsg, 1024, 0);
+
+														if (bytesReceived == SOCKET_ERROR) {
+															memset(logMsg, '\0', 150);
+
+															snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+
+															WarningLog(logMsg);
+															break;
+														}
+
+														if (bytesReceived == 0) {
+															memset(logMsg, '\0', 150);
+
+															snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
+
+															InfoLog(logMsg);
+															break;
+														}
+
+														if (bytesReceived > 0)
+														{
+															if (strcmp(revMsg, "100 OK") == 0) {
+
+
+
+															}
+														}
+													}
+													else {
+														memset(logMsg, '\0', 150);
+
+														snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
+
+														InfoLog(logMsg);
+													}
+												}
+											}
+											else {
+												memset(logMsg, '\0', 150);
+
+												snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
+
+												InfoLog(logMsg);
+											}
+										}
+									}
+									else {
+										memset(logMsg, '\0', 150);
+
+										snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
+
+										InfoLog(logMsg);
+									}
+								}
+							}
+							else {
+								memset(logMsg, '\0', 150);
+
+								snprintf(logMsg, 150, "Erro de protocolo de comunicaçâo! Thread: %d", client->threadID);
+
+								InfoLog(logMsg);
+							}
 						}
 					}
-
 					/*-------Loop------*/
 				}
 
@@ -761,79 +803,121 @@ unsigned __stdcall ClientSession(Client* client) {
 
 						if (bytesReceived > 0)
 						{
-
-							sendData(client, "100 OK");
-
 							int id = 0;
+							int isInTeatro = 0;
 
 							id = atoi(revMsg);
 
-							if (client->tamTeatrosVisitados == 0)
+							if (id != -1)
 							{
-								client->tamTeatrosVisitados++;
+								auxId = isTeatroVisitado(id, client);
 
-								client->teatroVisitados = calloc(1, sizeof(int));
+								if (auxId != -1) {
+									for (size_t i = 0; i < tamTeatros; i++)
+									{
+										if (getId(teatros[i]) == auxId)
+										{
+											isInTeatro = 1;
+											break;
+										}
+									}
 
-								if (client->teatroVisitados != NULL) {
-									*(client->teatroVisitados) = id;
-									memset(logMsg, '\0', 150);
+									if (isInTeatro)
+									{
+										if (client->tamTeatrosVisitados == 0)
+										{
+											client->tamTeatrosVisitados++;
 
-									snprintf(logMsg, 150, "Escolha recebida com sucesso. Thread: %d", client->threadID);
+											client->teatroVisitados = calloc(1, sizeof(int));
 
-									InfoLog(logMsg);
+											if (client->teatroVisitados != NULL) {
+												*(client->teatroVisitados) = id;
+												memset(logMsg, '\0', 150);
+
+												snprintf(logMsg, 150, "Escolha recebida com sucesso. Thread: %d", client->threadID);
+
+												InfoLog(logMsg);
+											}
+											else {
+												client->tamTeatrosVisitados--;
+
+												memset(logMsg, '\0', 150);
+
+												snprintf(logMsg, 150, "Erro ao receber escolha. Thread: %d", client->threadID);
+
+												WarningLog(logMsg);
+											}
+
+										}
+										else {
+
+											int* auxTeatrosVisitados = NULL;
+
+											client->tamTeatrosVisitados++;
+
+											auxTeatrosVisitados = calloc(client->tamTeatrosVisitados, sizeof(int));
+
+											if (auxTeatrosVisitados != NULL)
+											{
+												int size = (client->tamTeatrosVisitados - 1);
+
+												memmove(auxTeatrosVisitados, client->teatroVisitados, sizeof(int) * size);
+
+												*(auxTeatrosVisitados + (client->tamTeatrosVisitados - 1)) = id;
+
+												free(client->teatroVisitados);
+
+												client->teatroVisitados = auxTeatrosVisitados;
+
+												auxTeatrosVisitados = NULL;
+
+												qsort(client->teatroVisitados, client->tamTeatrosVisitados, sizeof(int), compareTeatrosVisitados);
+
+												memset(logMsg, '\0', 150);
+
+												snprintf(logMsg, 150, "Escolha recebida com sucesso. Thread: %d", client->threadID);
+
+												InfoLog(logMsg);
+
+											}
+											else {
+												client->tamTeatrosVisitados--;
+
+												memset(logMsg, '\0', 150);
+
+												snprintf(logMsg, 150, "Erro ao receber escolha. Thread: %d", client->threadID);
+
+												WarningLog(logMsg);
+											}
+										}
+
+										int visitasTeatro = -1;
+
+										for (size_t i = 0; i < tamTeatros; i++)
+										{
+											if (getId(teatros[i]) == id)
+											{
+												visitasTeatro = getVisitas(teatros[i]);
+											}
+										}
+
+										if (visitasTeatro != -1)
+										{
+											updateVisitas(teatros, id, client);
+										}
+										else
+										{
+											memset(logMsg, '\0', 150);
+
+											snprintf(logMsg, 150, "Erro ao incrementar as visitas ao teatro com ID: %d. Thread: %d", id, client->threadID);
+
+											WarningLog(logMsg);
+										}
+									}
 								}
-								else {
-									client->tamTeatrosVisitados--;
-
-									memset(logMsg, '\0', 150);
-
-									snprintf(logMsg, 150, "Erro ao receber escolha. Thread: %d", client->threadID);
-
-									WarningLog(logMsg);
-								}
-
 							}
-							else {
-
-								int* auxTeatrosVisitados = NULL;
-
-								client->tamTeatrosVisitados++;
-
-								auxTeatrosVisitados = calloc(client->tamTeatrosVisitados, sizeof(int));
-
-								if (auxTeatrosVisitados != NULL)
-								{
-									int size = (client->tamTeatrosVisitados - 1);
-
-									memmove(auxTeatrosVisitados, client->teatroVisitados, sizeof(int) * size);
-
-									*(auxTeatrosVisitados + (client->tamTeatrosVisitados - 1)) = id;
-
-									free(client->teatroVisitados);
-
-									client->teatroVisitados = auxTeatrosVisitados;
-
-									auxTeatrosVisitados = NULL;
-
-									qsort(client->teatroVisitados, client->tamTeatrosVisitados, sizeof(int), compareTeatrosVisitados);
-
-									memset(logMsg, '\0', 150);
-
-									snprintf(logMsg, 150, "Escolha recebida com sucesso. Thread: %d", client->threadID);
-
-									InfoLog(logMsg);
-
-								}
-								else {
-									client->tamTeatrosVisitados--;
-
-									memset(logMsg, '\0', 150);
-
-									snprintf(logMsg, 150, "Erro ao receber escolha. Thread: %d", client->threadID);
-
-									WarningLog(logMsg);
-								}
-							}
+							else
+								isSair = 1;
 						}
 					}
 				}
@@ -856,11 +940,28 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
-				memset(logMsg, '\0', 150);
+				if (isSair)
+				{
+					sendData(client, "300 LEFT");
 
-				snprintf(logMsg, 150, "Pedido comrpra finalizado. Thread: %d", client->threadID);
+					memset(logMsg, '\0', 150);
 
-				InfoLog(logMsg);
+					snprintf(logMsg, 150, "Pedido de compra cancelado. Thread: %d", client->threadID);
+
+					InfoLog(logMsg);
+				}
+				else
+				{
+					sendData(client, "100 OK");
+
+					memset(logMsg, '\0', 150);
+
+					snprintf(logMsg, 150, "Pedido de compra finalizado. Thread: %d", client->threadID);
+
+					InfoLog(logMsg);
+				}
+
+				
 
 				if (!ReleaseMutex(MutexCidades) && !ReleaseMutex(MutexTeatros))
 				{
