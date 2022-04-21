@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	struct sockaddr_in server;
 	char message[1024], server_reply[2000];
 	int ws_result;
-	char local[50] = "Porto";
+	char local[50];
 	char strRec[1024];
 	int bytesReceived = 0;
 	int cont = 1;
@@ -23,27 +23,22 @@ int main(int argc, char* argv[])
 	int comprar = 0;
 	char  x;
 	unsigned int tamT = 0;
-
+	memset(local,'\0',50);
 
 	// Initialise winsock
-	printf("\nInitialising Winsock...");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
 		printf("Failed. Error Code : %d", WSAGetLastError());
 		return 1;
 	}
 
-	printf("Initialised.\n");
-
+	
 	//Create a socket
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	if (s == INVALID_SOCKET)
 	{
 		printf("Could not create socket : %d", WSAGetLastError());
 	}
-
-	printf("Socket created.\n");
-
 
 	// create the socket  address (ip address and port)
 	server.sin_addr.s_addr = inet_addr("25.58.1.108");
@@ -57,10 +52,12 @@ int main(int argc, char* argv[])
 		puts("connect error");
 		return 1;
 	}
-
-	system("cls");
 	int c;
-
+	printf("Insira a sua Localizacao:\n->");
+	scanf("%[a-zA-Z -]", local);
+	while ((c = getchar()) != '\n' && c != EOF);
+	system("cls");
+	
 	while (cont) {
 		printf("\n");
 		printf(" -----------\n");
@@ -273,7 +270,7 @@ int main(int argc, char* argv[])
 
 							if (bytesReceived > 0) {
 								if (strcmp(strRec, "100 OK") == 0) {
-
+									printf("-1 para Sair");
 									printf("\nSelecione o numero do Teatro que ja visitou:\n->");
 									scanf("%d", &comprar);
 									while ((c = getchar()) != '\n' && c != EOF);
@@ -297,9 +294,14 @@ int main(int argc, char* argv[])
 									}
 
 									if (bytesReceived > 0) {
+										printf("\n%s\n", strRec);
 										if (strcmp(strRec, "100 OK") == 0) {
 											system("cls");
 											printf("Compra efetuada com sucesso\n\n");
+										}
+										if (strcmp(strRec, "300 LEFT") == 0) {
+											system("cls");
+											printf("Pedido de compra cancelada\n\n");
 										}
 
 									}
