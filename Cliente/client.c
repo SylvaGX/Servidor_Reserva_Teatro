@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 	int c;
-	printf("Insira a sua Localizacao:\n->");
+	printf("Insira a sua Localizacao(cidades e concelhos de Portugal):\n->");
 	scanf("%[a-zA-Z -]", local);
 	while ((c = getchar()) != '\n' && c != EOF);
 	system("cls");
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
 					strcpy(message, "100 OK");
 					send(s, message, strlen(message), 0);
 				}
-				else //se nao mandar 100OK
+				else
 				{
 					cont = 0;
 					break;
@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
 
 							if (bytesReceived > 0) {
 								if (strcmp(strRec, "100 OK") == 0) {
-									printf("-1 para Sair");
+									printf("\n-1 para Sair");
 									printf("\nSelecione o numero do Teatro que ja visitou:\n->");
 									scanf("%d", &comprar);
 									while ((c = getchar()) != '\n' && c != EOF);
@@ -297,11 +297,15 @@ int main(int argc, char* argv[])
 										printf("\n%s\n", strRec);
 										if (strcmp(strRec, "100 OK") == 0) {
 											system("cls");
-											printf("Compra efetuada com sucesso\n\n");
+											printf("Compra efetuada com sucesso!\n\n");
 										}
 										if (strcmp(strRec, "300 LEFT") == 0) {
 											system("cls");
-											printf("Pedido de compra cancelada\n\n");
+											printf("Pedido de compra cancelada!\n\n");
+										}
+										if (strcmp(strRec, "404 NOT FOUND") == 0) {
+											system("cls");
+											printf("Pedido de compra invalido. A opcao que inseriu nao existe!\n\n");
 										}
 
 									}
