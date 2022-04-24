@@ -534,6 +534,8 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				int auxId = -1;
 				int isSair = 0;
+				int isVisitado = 0;
+				int isInTeatro = 0;
 
 				for (size_t i = 0; i < tamTeatros; i++)
 				{
@@ -804,7 +806,6 @@ unsigned __stdcall ClientSession(Client* client) {
 						if (bytesReceived > 0)
 						{
 							int id = 0;
-							int isInTeatro = 0;
 
 							id = atoi(revMsg);
 
@@ -915,6 +916,8 @@ unsigned __stdcall ClientSession(Client* client) {
 										}
 									}
 								}
+								else
+									isVisitado = 1;
 							}
 							else
 								isSair = 1;
@@ -947,6 +950,16 @@ unsigned __stdcall ClientSession(Client* client) {
 					memset(logMsg, '\0', 150);
 
 					snprintf(logMsg, 150, "Pedido de compra cancelado. Thread: %d", client->threadID);
+
+					InfoLog(logMsg);
+				}
+				else if(isVisitado || !isInTeatro)
+				{
+					sendData(client, "404 NOT FOUND");
+
+					memset(logMsg, '\0', 150);
+
+					snprintf(logMsg, 150, "Pedido de compra invalido. Thread: %d", client->threadID);
 
 					InfoLog(logMsg);
 				}

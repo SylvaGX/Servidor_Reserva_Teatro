@@ -15,7 +15,7 @@ void InfoLog(const char* msg)
         time_t now;
         time(&now);
         fprintf(log, "%s [%s]: %s\n", ctime(&now), "Info", msg);
-        printf("\033[0; 37m");
+        printf("\033[0;37m");
         printf("%s [%s]: %s\n", ctime(&now), "Info", msg);
         printf("\033[0m");
 
@@ -25,7 +25,6 @@ void InfoLog(const char* msg)
     if (!ReleaseMutex(MutexLog)) {
         //Lidar com erro
     }
-
 }
 
 void WarningLog(const char* msg)
@@ -42,7 +41,7 @@ void WarningLog(const char* msg)
         time_t now;
         time(&now);
         fprintf(log, "%s [%s]: %s\n", ctime(&now), "Warning", msg);
-        printf("\033[0; 33m");
+        printf("\033[0;33m");
         printf("%s [%s]: %s\n", ctime(&now), "Warning", msg);
         printf("\033[0m");
 
@@ -68,7 +67,7 @@ void ErrorLog(const char* msg)
         time_t now;
         time(&now);
         fprintf(log, "%s [%s]: %s\n", ctime(&now), "Error", msg);
-        printf("\033[0; 31m");
+        printf("\033[0;31m");
         printf("%s [%s]: %s\n", ctime(&now), "Error", msg);
         printf("\033[0m");
 
@@ -78,5 +77,4 @@ void ErrorLog(const char* msg)
     if (!ReleaseMutex(MutexLog)) {
         //Lidar com erro
     }
-    
 }
