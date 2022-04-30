@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "server.h"
 
-/* Swaps position of strings in array (char**) */
+/* Swaps position */
 void swap(const void** a, const void** b) {
 	const void* temp = *a;
 	*a = *b;
@@ -25,11 +25,11 @@ char* toUpper(char temp[]) {
 	return name;
 }
 
-/*
-R = earth radius
-acos(sin(lat(city1))-sin(lat(city2))+cos(lat(city1))-cos(lat(city2))-cos(delta(long)))*R
+/**
+* Converte graus em radianos
+* @param long double degree
+* @return long double -  graus em radianos
 */
-
 long double toRadians(const long double degree)
 {
 	// cmath library in C++
@@ -40,6 +40,14 @@ long double toRadians(const long double degree)
 	return (one_deg * degree);
 }
 
+/**
+* Função que calcula a distancia entre latitudes e longitudes de duas cidades
+* @param long double lat1
+* @param long double long1
+* @param long double lat2
+* @param long double long2
+* @return long double - Distancia entre as duas cidades
+*/
 long double distance(long double lat1, long double long1,
 	long double lat2, long double long2)
 {
@@ -74,24 +82,25 @@ long double distance(long double lat1, long double long1,
 
 int main()
 {
-	// Initialise winsock
+	// Inicializar winsock
 	WSADATA wsData;
 	WORD ver = MAKEWORD(2, 2);
 
-	printf("\nInitialising Winsock...\n");
+	printf("\A Inicializar o Winsock...\n");
 	int wsResult = WSAStartup(ver, &wsData);
 	if (wsResult != 0) {
 		fprintf(stderr, "\nWinsock setup fail! Error Code : %d\n", WSAGetLastError());
 		return 1;
 	}
 
-	// Create a socket
+	// Criar um socket
 	SOCKET listening = socket(AF_INET, SOCK_STREAM, 0);
 	if (listening == INVALID_SOCKET) {
 		fprintf(stderr, "\nSocket creationg fail! Error Code : %d\n", WSAGetLastError());
 		return 1;
 	}
 	
+	// Criar um mutex para as cidades
 	MutexCidades = CreateMutex(
 		NULL,              // default security attributes
 		FALSE,             // initially not owned
@@ -103,7 +112,7 @@ int main()
 		return 1;
 	}
 
-
+	// Criar um mutex para os teatros
 	MutexTeatros = CreateMutex(
 		NULL,              // default security attributes
 		FALSE,             // initially not owned
@@ -115,11 +124,13 @@ int main()
 		return 1;
 	}
 
+	// Ler o ficheiro das cidades e guardar num array de estruturas
 	cidades = InitCidades();
 
+	// Ordenar o array das cidades
 	qsort(cidades, tamCidades, sizeof(Cidade*), compareCidades);
 	
-	printf("Socket created.\n");
+	printf("Socket Criado.\n");
 
 	// Bind the socket (ip address and port)
 	struct sockaddr_in hint;
@@ -139,11 +150,11 @@ int main()
 	// Main program loop
 	SOCKET clientSocket;
 
-	unsigned int numClients = 0;
 	Client* c;
 
+	// Ficar a espera de um cliente
 	while ((clientSocket = accept(listening, (struct sockaddr*)&client, &clientSize))) {
-		// Create a new thread for the accepted client (also pass the accepted client socket).
+		// Criar uma nova thread para o cliente aceite.
 		unsigned threadID;
 		c = calloc(1, sizeof(Client));
 		if (c != NULL)
@@ -161,12 +172,13 @@ int main()
 		}
 	}
 
+	// Fechar os mutexes
 	CloseHandle(MutexCidades);
 	CloseHandle(MutexTeatros);
 
-	// Close listening socket
+	// Fechar o listening socket
 	closesocket(listening);
 
-	//Cleanup winsock
+	// Limpar o winsock
 	WSACleanup();
 }

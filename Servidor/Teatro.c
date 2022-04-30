@@ -98,6 +98,13 @@ void quicksortTeatros(const Teatro** arr, unsigned int length, float lat, float 
 	quicksortTeatros(arr + piv, length - piv, lat, longi);
 }
 
+/**
+* Função para ler o ficheiro dos teatros e guardar num array de estruturas de teatros
+* @param long double lat
+* @param long double longi
+* @param Client* client
+* @return Teatro** - Array de estruturas de teatros
+*/
 Teatro** InitTeatros(float lat, float longi, Client *client)
 {
 

@@ -64,6 +64,10 @@ int compareCidades(const void* a, const void* b)
 		return 1;  // a > b
 }
 
+/**
+* Função para ler o ficheiro das cidades e guardar num array de estruturas de cidades
+* @return Cidade** - Array de estruturas de cidades
+*/
 Cidade** InitCidades()
 {
 	Cidade** cidades = NULL;

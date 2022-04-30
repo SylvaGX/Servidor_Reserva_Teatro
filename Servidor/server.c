@@ -1,9 +1,11 @@
-/* 
-Simple winsock Server
-*/
-
 #include "server.h"
 
+/**
+* Função para mandar dados para um cliente
+* @param Client* client
+* @param char** data
+* @return int - retorna o restulado do envio dos dados
+*/
 int sendData(Client* client, char* data) {
 	char sendMsg[1024];
 	char logMsg[150];
@@ -13,39 +15,45 @@ int sendData(Client* client, char* data) {
 	ZeroMemory(sendMsg, 1024);
 	strcpy(sendMsg, data);
 
-	ws_result = send(client->socket, sendMsg, strlen(sendMsg) + 1, 0); // Hanlde errors
+	ws_result = send(client->socket, sendMsg, strlen(sendMsg) + 1, 0); // Função para enviar dados para o cliente
+
+	// Hanlde errors
 	if (ws_result < 0)
 	{
-		memset(logMsg, '\0', 150);
+		memset(logMsg, '\0', 150); // Limpar a variável
 
-		snprintf(logMsg, 150, "Connect Error! Thread: %d", client->threadID);
+		snprintf(logMsg, 150, "Connect Error! Thread: %d", client->threadID); // Copiar a string para a variável
 
-		WarningLog(logMsg);
+		WarningLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 		return 1;
 	}
 
 	return ws_result;
 }
 
+/**
+* Função para atualizar as visitas de um determinado teatro no ficheiro de teatros.csv
+* @param Teatro** teatros
+* @param int id
+* @param Client* client
+*/
 void updateVisitas(Teatro **teatros, int id, Client *client) {
 	
 	FILE* f;
 	char logMsg[150];
-	memset(logMsg, '\0', 150);
+	memset(logMsg, '\0', 150); // Limpar a variável
 
-	f = fopen("teatros.csv", "w");
+	f = fopen("teatros.csv", "w"); // Abrir o ficheiro teatros.csv
 
-	memset(logMsg, '\0', 150);
+	memset(logMsg, '\0', 150); // Limpar a variável
 
-	snprintf(logMsg, 150, "A incrementar o numero de visitados. Thread: %d", client->threadID);
+	snprintf(logMsg, 150, "A incrementar o numero de visitados. Thread: %d", client->threadID); // Copiar a string para a variável
 
-	InfoLog(logMsg);
+	InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 
+	// Verificar se abriu o ficheiro corretamente
 	if (f != NULL)
 	{
-
-		int numVis = 0;
-
 		for (size_t i = 0; i < tamTeatros; i++)
 		{
 			if (id == getId(teatros[i]))
@@ -58,15 +66,25 @@ void updateVisitas(Teatro **teatros, int id, Client *client) {
 			}
 		}
 
-		fclose(f);
+		fclose(f); // Fechar o ficheiro
 	}
 }
 
+/**
+* Função para comparar os ids dos teatros
+* @param const void* a
+* @param const void* b
+*/
 int compareTeatrosVisitados(const void* a, const void* b)
 {
 	return (*(int*)a - *(int*)b);
 }
 
+/**
+* Função principal que corre por thread para que possa disponibilizar acesso por cliente. 
+* Cada cliente inicializado é criada uma thread que corre esta função para gerenciar o mesmo cliente.
+* @param Client* client
+*/
 unsigned __stdcall ClientSession(Client* client) {
 	char sendMsg[1024];
 	char revMsg[1024];
@@ -75,129 +93,136 @@ unsigned __stdcall ClientSession(Client* client) {
 	int bytesReceived = 0;
 	int ws_result = 0;
 
-	memset(logMsg, '\0', 150);
+	memset(logMsg, '\0', 150); // Limpar a variável
 
-	snprintf(logMsg, 150, "User connected. Thread: %d", client->threadID);
+	snprintf(logMsg, 150, "User connected. Thread: %d", client->threadID); // Copiar a string para a variável
 
-	InfoLog(logMsg);
+	InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 
+	// Loop da thread para ficar atento aos pedidos do cliente
 	while (TRUE)
 	{
-		ZeroMemory(revMsg, 1024);
-		bytesReceived = recv(client->socket, revMsg, 1024, 0);
+		ZeroMemory(revMsg, 1024); // Limpar a variavel
+
+		bytesReceived = recv(client->socket, revMsg, 1024, 0); // Ficar à espera de uma resposta do cliente
+
+		// Erro inesperado do cliente
 		if (bytesReceived == SOCKET_ERROR) {
-			memset(logMsg, '\0', 150);
+			memset(logMsg, '\0', 150); // Limpar a variável
 
-			snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+			snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID); // Copiar a string para a variável
 
-			WarningLog(logMsg);
+			WarningLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 			break;
 		}
 
+		// Cliente desconectado
 		if (bytesReceived == 0) {
-			memset(logMsg, '\0', 150);
+			memset(logMsg, '\0', 150); // Limpar a variável
 
-			snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
+			snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID); // Copiar a string para a variável
 
-			InfoLog(logMsg);
+			InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 			break;
 		}
 
+		// A thread recebeu informação sem erro
 		if (bytesReceived > 0)
 		{
-			//printf("%s\n", revMsg);
+			//Verificar qual o pedido do cliente
+
+			// Se fizer um pedido de TEATRO
+			// Iremos mandar os teatros ao cliente
 			if (strcmp(revMsg, "TEATRO") == 0) {
 
-				memset(logMsg, '\0', 150);
+				memset(logMsg, '\0', 150); // Limpar a variável
 
-				snprintf(logMsg, 150, "Pedido teatro. Thread: %d", client->threadID);
+				snprintf(logMsg, 150, "Pedido teatro. Thread: %d", client->threadID); // Copiar a string para a variável
 
-				InfoLog(logMsg);
+				InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 
-				//mandar lista de teatros
-				ZeroMemory(revMsg, 1024);
-				ZeroMemory(sendMsg, 1024);
+				ZeroMemory(revMsg, 1024); // Limpar a variável
+				ZeroMemory(sendMsg, 1024); // Limpar a variável
 
-				strcpy(sendMsg, "100 OK");
+				strcpy(sendMsg, "100 OK"); // Copiar a string para a variável
 
-				sendData(client, sendMsg);
+				sendData(client, sendMsg); // Mandar dados para o cliente
 
 				bytesReceived = recv(client->socket, revMsg, 1024, 0);
 
 				if (bytesReceived == SOCKET_ERROR) {
-					memset(logMsg, '\0', 150);
+					memset(logMsg, '\0', 150); // Limpar a variável
 
-					snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID);
+					snprintf(logMsg, 150, "Receive error! Thread: %d", client->threadID); // Copiar a string para a variável
 
-					WarningLog(logMsg);
+					WarningLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 					break;
 				}
 
 				if (bytesReceived == 0) {
-					memset(logMsg, '\0', 150);
+					memset(logMsg, '\0', 150); // Limpar a variável
 
-					snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID);
+					snprintf(logMsg, 150, "Cliente Desconectado! Thread: %d", client->threadID); // Copiar a string para a variável
 
-					InfoLog(logMsg);
+					InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 					break;
 				}
 
-				strcpy(client->location, revMsg);
+				strcpy(client->location, revMsg); // Copiar a string para a variável
 
-				ZeroMemory(sendMsg, 1024);
-
-				strcpy(sendMsg, "100 OK");
-
-				sendData(client, sendMsg);
-
-				// Ler ficheiro com os teatros
+				// Bloquear o mutex das cidades
 				DWORD resultMutexCidades = WaitForSingleObject(
 					MutexCidades,    // handle to mutex
 					INFINITE);  // no time-out interval
 
-				// Ler ficheiro com os teatros
+				// Bloquear o mutex dos teatros
 				DWORD resultMutexTeatros = WaitForSingleObject(
 					MutexTeatros,    // handle to mutex
 					INFINITE);  // no time-out interval
 
+				ZeroMemory(sendMsg, 1024); // Limpar a variável
+
+				strcpy(sendMsg, "100 OK"); // Copiar a string para a variável
+
+				sendData(client, sendMsg); // Mandar dados para o cliente
+
 				float lat = 0.0f;
 				float longi = 0.0f;
 
-				memset(logMsg, '\0', 150);
+				memset(logMsg, '\0', 150); // Limpar a variável
 
-				snprintf(logMsg, 150, "A obter a localizacao. Thread: %d", client->threadID);
+				snprintf(logMsg, 150, "A obter a localizacao. Thread: %d", client->threadID); // Copiar a string para a variável
 
-				InfoLog(logMsg);
+				InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 
-				int index = binarySearchCidade(cidades, 0, tamCidades, client->location);
+				int index = binarySearchCidade(cidades, 0, tamCidades, client->location); // obter o index da cidade do cliente
 				
-				lat = getLat(cidades[index]);
-				longi = getLong(cidades[index]);
+				lat = getLat(cidades[index]); // Obter a latitude da cidade
+				longi = getLong(cidades[index]); // Obter a longitude da cidade
 
-				teatros = InitTeatros(lat, longi, client);
+				teatros = InitTeatros(lat, longi, client); // Ler os teatros do ficheiro e guardar numa estrutura
 
-				int size = 0;
 				int value = 0;
 				char str[1024];
 
-				memset(logMsg, '\0', 150);
+				memset(logMsg, '\0', 150); // Limpar a variável
 
-				snprintf(logMsg, 150, "A enviar teatros.... Thread: %d", client->threadID);
+				snprintf(logMsg, 150, "A enviar teatros.... Thread: %d", client->threadID); // Copiar a string para a variável
 
-				InfoLog(logMsg);
+				InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
 
+				// Enviar os teatros para o cliente
 				for (size_t i = 0; i < tamTeatros; i++)
 				{
 					/*-------Loop------*/
 
-					value = getId(teatros[i]);
-					size = (int)((ceil(log10(value)) + 1) * sizeof(char));
+					value = getId(teatros[i]); // Obter o id do teatro
 
-					memset(str, '\0', 1024);
+					memset(str, '\0', 1024); // Limpar a variável
 
-					itoa(value, str, 10);
+					itoa(value, str, 10); // Converter inteiro para string
 
-					sendData(client, str);
+					sendData(client, str); // Mandar dados para o cliente
 
 					ZeroMemory(revMsg, 1024);
 					bytesReceived = recv(client->socket, revMsg, 1024, 0);
@@ -251,10 +276,7 @@ unsigned __stdcall ClientSession(Client* client) {
 							{
 								if (strcmp(revMsg, "100 OK") == 0) {
 
-									//free(str);
-
 									value = getEspetaculos(teatros[i]);
-									size = (int)((ceil(log10(value)) + 1) * sizeof(char));
 
 									memset(str, '\0', 1024);
 
@@ -314,10 +336,7 @@ unsigned __stdcall ClientSession(Client* client) {
 											{
 												if (strcmp(revMsg, "100 OK") == 0) {
 
-													//free(str);
-
 													value = getVisitas(teatros[i]);
-													size = (int)((ceil(log10(value)) + 1) * sizeof(char));
 
 													memset(str, '\0', 1024);
 
@@ -399,6 +418,8 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
+				// Limpar a estrutura de teatros
+
 				memset(logMsg, '\0', 150);
 
 				snprintf(logMsg, 150, "A limpar estrutura de teatros. Thread: %d", client->threadID);
@@ -446,13 +467,23 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
-				if (!ReleaseMutex(MutexCidades) && !ReleaseMutex(MutexTeatros))
+				// Libertar os mutexes
+				if (!ReleaseMutex(MutexCidades))
+				{
+					// Handle error.
+				}
+
+				if (!ReleaseMutex(MutexTeatros))
 				{
 					// Handle error.
 				}
 				
 			}
 
+			// Se fizer um pedido de COMPRA
+			// Iremos mandar os teatros não visitados pelo cliente
+			// e esperar por uma resposta do cliente de qual é que
+			// teatro já visitou
 			if (strcmp(revMsg, "COMPRA") == 0) {
 
 				memset(logMsg, '\0', 150);
@@ -490,21 +521,21 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				strcpy(client->location, revMsg);
 
+				// Bloquear o mutex das cidades
+				DWORD resultMutexCidades = WaitForSingleObject(
+					MutexCidades,    // handle to mutex
+					INFINITE);  // no time-out interval
+
+				// Bloquear o mutex dos teatros
+				DWORD resultMutexTeatros = WaitForSingleObject(
+					MutexTeatros,    // handle to mutex
+					INFINITE);  // no time-out interval
+
 				ZeroMemory(sendMsg, 1024);
 
 				strcpy(sendMsg, "100 OK");
 
 				sendData(client, sendMsg);
-
-				// Ler ficheiro com os teatros
-				DWORD resultMutexCidades = WaitForSingleObject(
-					MutexCidades,    // handle to mutex
-					INFINITE);  // no time-out interval
-
-				// Ler ficheiro com os teatros
-				DWORD resultMutexTeatros = WaitForSingleObject(
-					MutexTeatros,    // handle to mutex
-					INFINITE);  // no time-out interval
 
 				float lat = 0.0f;
 				float longi = 0.0f;
@@ -515,14 +546,12 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
-				int index = binarySearchCidade(cidades, 0, tamCidades, client->location);
+				int index = binarySearchCidade(cidades, 0, tamCidades, client->location); // obter o index da cidade do cliente
 
-				lat = getLat(cidades[index]);
-				longi = getLong(cidades[index]);
+				lat = getLat(cidades[index]); // Obter a latitude da cidade
+				longi = getLong(cidades[index]); // Obter a longitude da cidade
 
-				teatros = InitTeatros(lat, longi, client);
-
-				int size = 0;
+				teatros = InitTeatros(lat, longi, client); // Ler os teatros do ficheiro e guardar numa estrutura
 				int value = 0;
 				char str[1024];
 
@@ -537,6 +566,7 @@ unsigned __stdcall ClientSession(Client* client) {
 				int isVisitado = 0;
 				int isInTeatro = 0;
 
+				// Enviar os teatros para o cliente
 				for (size_t i = 0; i < tamTeatros; i++)
 				{
 					/*-------Loop------*/
@@ -546,7 +576,6 @@ unsigned __stdcall ClientSession(Client* client) {
 					if (auxId != -1)
 					{
 						value = auxId;
-						size = (int)((ceil(log10(value)) + 1) * sizeof(char));
 
 						memset(str, '\0', 1024);
 
@@ -609,7 +638,6 @@ unsigned __stdcall ClientSession(Client* client) {
 										//free(str);
 
 										value = getEspetaculos(teatros[i]);
-										size = (int)((ceil(log10(value)) + 1) * sizeof(char));
 
 										memset(str, '\0', 1024);
 
@@ -670,7 +698,6 @@ unsigned __stdcall ClientSession(Client* client) {
 													if (strcmp(revMsg, "100 OK") == 0) {
 
 														value = getVisitas(teatros[i]);
-														size = (int)((ceil(log10(value)) + 1) * sizeof(char));
 
 														memset(str, '\0', 1024);
 
@@ -755,6 +782,7 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				sendData(client, "END");
 
+				// À espera de uma resposta do cliente a dizer que recebeu os teatros
 				ZeroMemory(revMsg, 1024);
 				bytesReceived = recv(client->socket, revMsg, 1024, 0);
 
@@ -782,6 +810,7 @@ unsigned __stdcall ClientSession(Client* client) {
 
 						sendData(client, "100 OK");
 					
+						// Eperar a resposta do id do teatro do cliente
 						ZeroMemory(revMsg, 1024);
 						bytesReceived = recv(client->socket, revMsg, 1024, 0);
 
@@ -807,13 +836,20 @@ unsigned __stdcall ClientSession(Client* client) {
 						{
 							int id = 0;
 
-							id = atoi(revMsg);
+							id = atoi(revMsg); // Converter string para inteiro
 
+							// Se a resposta for -1 então significa que o cliente quis voltar para o menu principal
+							// Senão atualiza as visitas do respetivo teatro
 							if (id != -1)
 							{
-								auxId = isTeatroVisitado(id, client);
+								auxId = isTeatroVisitado(id, client); // Verifica se o cliente já visitou o teatro
 
+								// Se auxId for -1 não visitou o teatro
+								// Senão visitou o teatro
 								if (auxId != -1) {
+
+									// Verificar se o id que foi enviado está na estrutura de dados
+									// Se estiver continua senão manda um erro a dizer que não existe o teatro enviado
 									for (size_t i = 0; i < tamTeatros; i++)
 									{
 										if (getId(teatros[i]) == auxId)
@@ -823,6 +859,7 @@ unsigned __stdcall ClientSession(Client* client) {
 										}
 									}
 
+									// Se o teatro estiver na estrutura então adiciona nos teatros visitados e incrementa as visitas no ficheiro
 									if (isInTeatro)
 									{
 										if (client->tamTeatrosVisitados == 0)
@@ -892,35 +929,14 @@ unsigned __stdcall ClientSession(Client* client) {
 											}
 										}
 
-										int visitasTeatro = -1;
-
-										for (size_t i = 0; i < tamTeatros; i++)
-										{
-											if (getId(teatros[i]) == id)
-											{
-												visitasTeatro = getVisitas(teatros[i]);
-											}
-										}
-
-										if (visitasTeatro != -1)
-										{
-											updateVisitas(teatros, id, client);
-										}
-										else
-										{
-											memset(logMsg, '\0', 150);
-
-											snprintf(logMsg, 150, "Erro ao incrementar as visitas ao teatro com ID: %d. Thread: %d", id, client->threadID);
-
-											WarningLog(logMsg);
-										}
+										updateVisitas(teatros, id, client); // Atualiza o ficheiro teatros.csv
 									}
 								}
 								else
-									isVisitado = 1;
+									isVisitado = 1; // Marcar que o teatro já foi visitado
 							}
 							else
-								isSair = 1;
+								isSair = 1; // Marcar que o cliente quer voltar ao menu principal
 						}
 					}
 				}
@@ -931,6 +947,8 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
+
+				// Limpar a estrutura de teatros
 				for (size_t i = 0; i < tamTeatros; i++)
 				{
 					free(teatros[i]);
@@ -943,6 +961,7 @@ unsigned __stdcall ClientSession(Client* client) {
 
 				InfoLog(logMsg);
 
+				// Voltar para o menu principal
 				if (isSair)
 				{
 					sendData(client, "300 LEFT");
@@ -953,6 +972,7 @@ unsigned __stdcall ClientSession(Client* client) {
 
 					InfoLog(logMsg);
 				}
+				// Teatro visitado ou não encontrado
 				else if(isVisitado || !isInTeatro)
 				{
 					sendData(client, "404 NOT FOUND");
@@ -963,6 +983,7 @@ unsigned __stdcall ClientSession(Client* client) {
 
 					InfoLog(logMsg);
 				}
+				// Incrementação das visitas ao respetivo teatro
 				else
 				{
 					sendData(client, "100 OK");
@@ -974,15 +995,20 @@ unsigned __stdcall ClientSession(Client* client) {
 					InfoLog(logMsg);
 				}
 
-				
+				// Libertar os mutexes
+				if (!ReleaseMutex(MutexCidades))
+				{
+					// Handle error.
+				}
 
-				if (!ReleaseMutex(MutexCidades) && !ReleaseMutex(MutexTeatros))
+				if (!ReleaseMutex(MutexTeatros))
 				{
 					// Handle error.
 				}
 
 			}
 
+			// Se o cliente selecionar a opção sair
 			if (strcmp(revMsg, "400 BYE") == 0) {
 
 				ZeroMemory(sendMsg, 1024);
@@ -1005,9 +1031,6 @@ unsigned __stdcall ClientSession(Client* client) {
 
 	// Close the socket
 	closesocket(client->socket);
-
-	//nao esquecer de fazer free de "client"
-	//free(client);
 
 	return 1;
 }
