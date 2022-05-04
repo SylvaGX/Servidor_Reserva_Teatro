@@ -25,6 +25,8 @@ int main(int argc, char* argv[])
 	unsigned int tamT = 0;
 	memset(local,'\0',50);
 
+	int c;
+	
 	// Initialise winsock
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
@@ -52,12 +54,31 @@ int main(int argc, char* argv[])
 		puts("connect error");
 		return 1;
 	}
-	int c;
-	printf("Insira a sua Localizacao(cidades e concelhos de Portugal):\n->");
-	scanf("%[a-zA-Z -]", local);//expressão regular para todos os caracteres de a a z, Espaço e - 
-	while ((c = getchar()) != '\n' && c != EOF); //clear "Enters"
-	system("cls");
-	
+
+	ZeroMemory(strRec, 1024);
+	bytesReceived = recv(s, strRec, 1024, 0); //receive 
+	if (bytesReceived == SOCKET_ERROR) {
+		printf("\nReceive error!\n");
+		cont = 0;
+	}
+	if (bytesReceived > 0) {
+		if (strcmp(strRec, "500 LOC") == 0) { //caso de ter recebido a confirmacao 
+			printf("Insira a sua Localizacao(cidades e concelhos de Portugal):\n->");
+			scanf("%[a-zA-Z -]", local);//expressão regular para todos os caracteres de a a z, Espaço e - 
+			while ((c = getchar()) != '\n' && c != EOF); //clear "Enters"
+			system("cls");
+			
+			//Envia a localizacao que a pessoa escreveu
+			ws_result = send(s, local, strlen(local), 0);
+			if (ws_result < 0)//caso de erro (nao enviou localizacao)
+			{
+				cont = 0;
+
+			}
+
+		}
+	}
+
 	while (cont) {
 		printf("\n");
 		printf(" -----------\n");
@@ -65,12 +86,27 @@ int main(int argc, char* argv[])
 		printf(" ------------\n->");
 		scanf("%c", &x);
 		while ((c = getchar()) != '\n' && c != EOF);//Limpar Enter
+
 		switch (x) {
 		case '0':
 			ZeroMemory(message, 1024); //limpa o bloco da memória da variavel
 			strcpy(message, "400 BYE");
 			send(s, message, strlen(message), 0);//envio da messagem "400 BYE" para o servidor
-			cont = 0;//variavel inteira para sair do while
+			ZeroMemory(strRec, 1024);
+			bytesReceived = recv(s, strRec, 1024, 0);
+			if (bytesReceived == SOCKET_ERROR) {//Caso de erro
+				printf("\nReceive error!\n");
+				cont = 0;
+				break;
+			}
+			if (bytesReceived > 0) {
+				if (strcmp(strRec, "400 BYE") == 0) {//confirmacao
+					system("cls");
+					printf("\nDisconnect\n");
+					cont = 0;//variavel inteira para sair do while
+				}
+			}
+
 			break;
 		case '1':
 			system("cls"); //limpa os caracteres do terminal
@@ -83,32 +119,7 @@ int main(int argc, char* argv[])
 				return 1;
 			}
 
-			ZeroMemory(message, 1024);
-			ZeroMemory(strRec, 1024);
-			bytesReceived = recv(s, strRec, 1024, 0); //receive 
-			if (bytesReceived == SOCKET_ERROR) {
-				printf("\nReceive error!\n");
-				cont = 0;
-				break;
-			}
-			if (bytesReceived > 0) {
-				if (strcmp(strRec, "100 OK") == 0) { //caso de ter recebido a confirmacao 
-
-
-				}
-				else { //caso de erro
-					cont = 0;
-				}
-			}
-
-			//Envia a localizacao que a pessoa escreveu
-			ws_result = send(s, local, strlen(local), 0);
-			if (ws_result < 0)//caso de erro (nao enviou localizacao)
-			{
-				cont = 0;
-				break;
-			}
-
+			ZeroMemory(message, 1024);	
 			ZeroMemory(strRec, 1024);
 			printf("A espera de acesso...\n ");
 			bytesReceived = recv(s, strRec, 1024, 0);
@@ -120,9 +131,9 @@ int main(int argc, char* argv[])
 			if (bytesReceived > 0) {
 				if (strcmp(strRec, "100 OK") == 0) {//confirmacao
 					system("cls");
-					printf("\n");
+					printf("Teatros Disponiveis:\n"); 
 					ZeroMemory(strRec, 1024);
-					bytesReceived = recv(s, strRec, 1024, 0);
+					bytesReceived = recv(s, strRec, 1024, 0);//receber id do primeiro
 					if (bytesReceived == SOCKET_ERROR) {//caso de erro
 						printf("\nReceive error!\n");
 						cont = 0;
@@ -136,8 +147,63 @@ int main(int argc, char* argv[])
 					}
 
 					while ((strcmp(strRec, "END") != 0)) {//"END" quando acaba de enviar os teatros
-						//id 100ok nometeatro 100ok numespetaculos 100ok loc 100ok numvisitas 100ok
-						// 0         1                    2                3        4
+						//id nometeatro numespetaculos loc numvisitas 
+						// 0      1           2         3      4
+						if (contador < 4) {
+							printf("%s | ", strRec);//imprime a informacao recebida
+							ZeroMemory(message, 1024);
+							strcpy(message, "100 OK");
+							send(s, message, strlen(message), 0);
+							contador++; //incrementa no contador
+							ZeroMemory(strRec, 1024);
+							bytesReceived = recv(s, strRec, 1024, 0);
+
+						}
+						else if (contador == 4) {
+							contador = 0; //reset do contador
+							printf("%s\n", strRec);//imprime o numero de visitas e passa para a proximal linha
+							ZeroMemory(message, 1024);
+							strcpy(message, "100 OK");
+							send(s, message, strlen(message), 0);
+							ZeroMemory(strRec, 1024);
+							bytesReceived = recv(s, strRec, 1024, 0);
+
+						}
+
+					}
+
+					ZeroMemory(message, 1024);
+					strcpy(message, "100 OK");//confirmacao
+					send(s, message, strlen(message), 0);
+
+
+					ZeroMemory(message, 1024);
+					ZeroMemory(strRec, 1024);
+					bytesReceived = recv(s, strRec, 1024, 0); //receber numero de teatros ja visitados
+					printf("Numero de Teatros Visitados:%s\n", strRec);
+					printf("Lista dos Teatros Visitados:\n");
+					
+					ZeroMemory(message, 1024);
+					strcpy(message, "100 OK");//confirmacao
+					send(s, message, strlen(message), 0);
+					
+					ZeroMemory(message, 1024);
+					ZeroMemory(strRec, 1024);
+					bytesReceived = recv(s, strRec, 1024, 0);//receber o primeiro id 
+					if (bytesReceived == SOCKET_ERROR) { //caso de erro
+						printf("\nReceive error!\n");
+						cont = 0;
+						break;
+					}
+					else if (bytesReceived == 0) { //caso de erro 
+						err = 1;
+
+
+					}
+
+					while ((strcmp(strRec, "END") != 0)) {//"END" quando acaba de enviar os teatros
+						//id nometeatro numespetaculos loc numvisitas
+						// 0         1          2       3        4
 						if (contador < 4) {
 							printf("%s | ", strRec);//imprime a informacao recebida
 							ZeroMemory(message, 1024);
@@ -177,7 +243,7 @@ int main(int argc, char* argv[])
 		case '2':
 			system("cls");
 			ZeroMemory(message, 1024);
-			strcpy(message, "COMPRA");
+			strcpy(message, "COMPRA");//Envio da Opcao
 			ws_result = send(s, message, strlen(message), 0);
 
 			if (ws_result < 0)//caso de erro
@@ -196,67 +262,78 @@ int main(int argc, char* argv[])
 			}
 			if (bytesReceived > 0) {
 				if (strcmp(strRec, "100 OK") == 0) {//confirmacao
-					//esta variavel dps vai receber o valor 
-					ws_result = send(s, local, strlen(local), 0);
-					if (ws_result < 0)//caso de erro
-					{
-						cont = 0;
-						break;
-					}
 					ZeroMemory(message, 1024);
 					ZeroMemory(strRec, 1024);
 					printf("A espera de acesso...\n ");//se estivermos na fila para o servidor enviar informacao
-					bytesReceived = recv(s, strRec, 1024, 0);
+					
+					system("cls");
+					printf("\n");
+					ZeroMemory(strRec, 1024);
+					bytesReceived = recv(s, strRec, 1024, 0);//receber o primeiro id
 					if (bytesReceived == SOCKET_ERROR) {//caso de erro
 						printf("\nReceive error!\n");
 						cont = 0;
+						err = 1;
 						break;
 					}
-					if (bytesReceived > 0) {
-						if (strcmp(strRec, "100 OK") == 0) {
-							system("cls");
-							printf("\n");
-							ZeroMemory(strRec, 1024);
-							bytesReceived = recv(s, strRec, 1024, 0);
-							if (bytesReceived == SOCKET_ERROR) {//caso de erro
-								printf("\nReceive error!\n");
-								cont = 0;
-								err = 1;
-								break;
-							}
-							else if (bytesReceived == 0) {//caso de erro
-								err = 1;
+					else if (bytesReceived == 0) {//caso de erro
+						err = 1;
 
 
-							}
-							//imprime teatros (como estamos na compra imprime os teatros que nao foram visitados)
-							while ((strcmp(strRec, "END") != 0)) {
-								if (contador < 4) {
-									printf("%s | ", strRec);
-									ZeroMemory(message, 1024);
-									strcpy(message, "100 OK");
-									send(s, message, strlen(message), 0);
-									contador++;
-									ZeroMemory(strRec, 1024);
-									bytesReceived = recv(s, strRec, 1024, 0);
-
-								}
-								else if (contador == 4) {
-									contador = 0;
-									printf("%s\n", strRec);
-									ZeroMemory(message, 1024);
-									strcpy(message, "100 OK");
-									send(s, message, strlen(message), 0);
-									ZeroMemory(strRec, 1024);
-									bytesReceived = recv(s, strRec, 1024, 0);
-
-								}
-
-							}
-
+					}
+					//imprime teatros (como estamos na compra imprime os teatros que nao foram visitados)
+					while ((strcmp(strRec, "END") != 0)) {
+						if (contador < 4) {
+							printf("%s | ", strRec);
 							ZeroMemory(message, 1024);
 							strcpy(message, "100 OK");
 							send(s, message, strlen(message), 0);
+							contador++;
+							ZeroMemory(strRec, 1024);
+							bytesReceived = recv(s, strRec, 1024, 0);
+
+						}
+						else if (contador == 4) {
+							contador = 0;
+							printf("%s\n", strRec);
+							ZeroMemory(message, 1024);
+							strcpy(message, "100 OK");
+							send(s, message, strlen(message), 0);
+							ZeroMemory(strRec, 1024);
+							bytesReceived = recv(s, strRec, 1024, 0);
+
+						}
+
+					}
+
+					ZeroMemory(message, 1024);
+					strcpy(message, "100 OK");
+					send(s, message, strlen(message), 0);
+					ZeroMemory(strRec, 1024);
+					bytesReceived = recv(s, strRec, 1024, 0);
+
+					if (bytesReceived == SOCKET_ERROR) {//Caso de erro
+						printf("\nReceive error!\n");
+						cont = 0;
+						err = 1;
+						break;
+					}
+					else if (bytesReceived == 0) {//Caso de erro
+						err = 1;
+					}
+
+					if (bytesReceived > 0) {
+						if (strcmp(strRec, "100 OK") == 0) {
+							printf("\n-1 para Sair");
+							printf("\nSelecione o numero do Teatro que ja visitou:\n->");
+							scanf("%d", &comprar);//Escolha atraves do id
+							while ((c = getchar()) != '\n' && c != EOF);
+
+							char str[4];
+							memset(str, '\0', 4);
+							itoa(comprar, str, 10);
+							send(s, str, strlen(str), 0);//envia a opcao escolhida (string)
+
 							ZeroMemory(strRec, 1024);
 							bytesReceived = recv(s, strRec, 1024, 0);
 
@@ -271,47 +348,20 @@ int main(int argc, char* argv[])
 							}
 
 							if (bytesReceived > 0) {
-								if (strcmp(strRec, "100 OK") == 0) {
-									printf("\n-1 para Sair");
-									printf("\nSelecione o numero do Teatro que ja visitou:\n->");
-									scanf("%d", &comprar);//Escolha atraves do id
-									while ((c = getchar()) != '\n' && c != EOF);
-
-									char str[4];
-									memset(str, '\0', 4);
-									itoa(comprar, str, 10);
-									send(s, str, strlen(str), 0);//envia a opcao escolhida (string)
-
-									ZeroMemory(strRec, 1024);
-									bytesReceived = recv(s, strRec, 1024, 0);
-
-									if (bytesReceived == SOCKET_ERROR) {//Caso de erro
-										printf("\nReceive error!\n");
-										cont = 0;
-										err = 1;
-										break;
-									}
-									else if (bytesReceived == 0) {//Caso de erro
-										err = 1;
-									}
-
-									if (bytesReceived > 0) {
-										printf("\n%s\n", strRec);
-										if (strcmp(strRec, "100 OK") == 0) {//Id válido
-											system("cls");
-											printf("Compra efetuada com sucesso!\n\n");
-										}
-										if (strcmp(strRec, "300 LEFT") == 0) {//Opcao -1 
-											system("cls");
-											printf("Pedido de compra cancelada!\n\n");
-										}
-										if (strcmp(strRec, "404 NOT FOUND") == 0) {//Id inválido
-											system("cls");
-											printf("Pedido de compra invalido. A opcao que inseriu nao existe!\n\n");
-										}
-
-									}
+								printf("\n%s\n", strRec);
+								if (strcmp(strRec, "100 OK") == 0) {//Id válido
+									system("cls");
+									printf("Compra efetuada com sucesso!\n\n");
 								}
+								if (strcmp(strRec, "300 LEFT") == 0) {//Opcao -1 
+									system("cls");
+									printf("Pedido de compra cancelada!\n\n");
+								}
+								if (strcmp(strRec, "404 NOT FOUND") == 0) {//Id inválido
+									system("cls");
+									printf("Pedido de compra invalido. A opcao que inseriu nao existe!\n\n");
+								}
+
 							}
 						}
 					}
