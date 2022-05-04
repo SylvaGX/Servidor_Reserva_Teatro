@@ -1,37 +1,35 @@
 #pragma once
+#include <iostream>
+#include <algorithm>
+#include <mutex>
 #include <windows.h>
+#include <vector>
 #include "Cidade.h"
 #include "Cliente.h"
 
-struct _Teatro
+class Teatro
 {
+private:
+	static std::mutex m;
+	static std::vector<Teatro> teatros;
 	int id;
-
-	char nome[100];
-
+	std::string nome;
 	int espetaculos;
-
-	char localizacao[100];
-
+	std::string localizacao;
 	int visitas;
+
+public:
+	Teatro(int id, std::string nome, int espetaculos, std::string loc, int visitas);
+	static void quicksortTeatros(const std::vector<Teatro>::iterator arr, unsigned int length, float lat, float longi);
+	static void InitTeatros(float lat, float longi);
+	static std::vector<Teatro>& getTeatros() { return teatros; }
+	int getId() { return id; }
+	std::string getNome() { return nome; }
+	int getEspetaculos() { return espetaculos; }
+	std::string getLocalizacao() { return localizacao; }
+	int getVisitas() { return visitas; }
+	static std::mutex& getMutex() { return m; }
+	bool operator==(const int& i);
 };
 
-typedef struct _Teatro Teatro;
-
-HANDLE MutexTeatros;
-
-Teatro** teatros;
-int tamTeatros;
-
-Teatro* Create_Teatro(int id, char nome[], int espetaculos, char loc[], int visitas);
-int binarySearchTeatro(Teatro** arr, int l, int r, char loc[]);
-int binarySearchTeatroIds(int* arr, int l, int r, int id);
-void quicksortTeatros(const Teatro** arr, unsigned int length, float lat, float longi);
-Teatro** InitTeatros(float lat, float longi, Client *c);
-int isTeatroVisitado(int id, Client *c);
-int getId(Teatro* t);
-char* getTeatroNome(Teatro* t);
-int getEspetaculos(Teatro* t);
-char* getLocalizacao(Teatro* t);
-int getVisitas(Teatro* t);
 

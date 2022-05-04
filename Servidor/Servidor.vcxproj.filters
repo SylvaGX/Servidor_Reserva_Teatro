@@ -15,19 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="server.c">
+    <ClCompile Include="server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.c">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Cidade.c">
+    <ClCompile Include="Cidade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Teatro.c">
+    <ClCompile Include="Teatro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Log.c">
+    <ClCompile Include="Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cliente.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 #include <winsock2.h>
 #include <time.h>
 #include <process.h>
@@ -14,4 +15,5 @@
 #pragma comment (lib, "ws2_32.lib")
 #pragma warning(disable : 4996)
 
-unsigned __stdcall ClientSession(Client*);
+void __stdcall ClientSession(Client*);
+int sendData(Client* client, std::string data);

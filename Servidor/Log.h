@@ -1,12 +1,18 @@
 #pragma once
-#include <stdio.h>
+#include <iostream>
+#include <fstream>
 #include <windows.h>
 #include <time.h>
+#include <mutex>
 
-static HANDLE MutexLog;
+class Log {
+private:
+	static std::mutex m;
+	static std::mutex& getMutex() { return m; }
+	static std::string LogFileName;
 
-static char LogFileName[] = "logFile.txt";
-
-void InfoLog(const char* msg);
-void WarningLog(const char* msg);
-void ErrorLog(const char* msg);
+public:
+	static void InfoLog(std::string msg);
+	static void WarningLog(std::string msg);
+	static void ErrorLog(std::string msg);
+};

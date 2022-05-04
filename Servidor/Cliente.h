@@ -1,20 +1,58 @@
 #pragma once
+#include <iostream>
+#include <filesystem>
+#include <sstream>
+#include <fstream>
 #include <windows.h>
+#include <thread>
+#include <string>
+#include <list>
+#include <mutex>
 
-struct _Client {
+class Client {
+private:
+	static std::mutex m;
 
-	HANDLE hThread;
+	std::thread mThread;
 
-	unsigned int threadID;
+	SOCKET socket = NULL;
 
-	SOCKET socket;
+	struct sockaddr_in* cli = NULL;
 
-	char location[100];
+	std::string location{};
 
-	int* teatroVisitados;
+	std::list<int> teatroVisitados;
+	
+public:
+	Client(struct sockaddr_in* cli, SOCKET socket);
+	Client(struct sockaddr_in* cli, SOCKET socket, std::string location, std::list<int> teaVis);
+	inline std::thread& getThread() {return mThread;}
 
-	int tamTeatrosVisitados;
+	inline void setSocket(SOCKET v) { socket = v;}
+	inline SOCKET getSocket() {return socket;}
 
+	inline void setCli(struct sockaddr_in* v) { cli = v;}
+	inline struct sockaddr_in* getCli() {return cli;}
+
+	inline void setLocation(std::string v) {location.assign(v);}
+	inline std::string getLocation() {return location;}
+
+	inline void setTeatroVisitados(std::list<int> v) { teatroVisitados = v;}
+	inline std::list<int>& getTeatrosVisitados() {return teatroVisitados;}
+
+	static Client* CheckClient(struct sockaddr_in* _cli, SOCKET _socket);
+	void UpdateClient();
+	void addClientToFile();
+
+	static std::mutex& getMutex() { return m; }
+
+	template <typename T>
+	bool contains(std::list<T>& listOfElements, const int element)
+	{
+		// Find the iterator if element in list
+		auto it = std::find(listOfElements.begin(), listOfElements.end(), element);
+		//return if iterator points to end or not. It points to end then it means element
+		// does not exists in list
+		return it != listOfElements.end();
+	}
 };
-
-typedef struct _Client Client;

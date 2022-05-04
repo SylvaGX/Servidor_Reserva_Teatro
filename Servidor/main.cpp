@@ -1,29 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <thread>
 #include "server.h"
-
-/* Swaps position */
-void swap(const void** a, const void** b) {
-	const void* temp = *a;
-	*a = *b;
-	*b = temp;
-}
-
-char* toUpper(char temp[]) {
-	char name[100];
-	strcpy(name, temp);
-	int lenName = strlen(name);
-	if (lenName > 0)
-	{
-		// Convert to upper case
-
-		for (unsigned int i = 0; i < lenName; i++) {
-			name[i] = toupper((unsigned char)name[i]);
-		}
-	}
-
-	return name;
-}
 
 /**
 * Converte graus em radianos
@@ -99,38 +76,21 @@ int main()
 		fprintf(stderr, "\nSocket creationg fail! Error Code : %d\n", WSAGetLastError());
 		return 1;
 	}
-	
-	// Criar um mutex para as cidades
-	MutexCidades = CreateMutex(
-		NULL,              // default security attributes
-		FALSE,             // initially not owned
-		NULL);             // unnamed mutex
-
-	if (MutexCidades == NULL)
-	{
-		printf("CreateMutex error: %d\n", GetLastError());
-		return 1;
-	}
-
-	// Criar um mutex para os teatros
-	MutexTeatros = CreateMutex(
-		NULL,              // default security attributes
-		FALSE,             // initially not owned
-		NULL);             // unnamed mutex
-
-	if (MutexTeatros == NULL)
-	{
-		printf("CreateMutex error: %d\n", GetLastError());
-		return 1;
-	}
 
 	// Ler o ficheiro das cidades e guardar num array de estruturas
-	cidades = InitCidades();
+	Cidade::InitCidades();
 
 	// Ordenar o array das cidades
-	qsort(cidades, tamCidades, sizeof(Cidade*), compareCidades);
+	Cidade::getCidades().sort([](Cidade& a, Cidade& b) {
+			std::string nome1(a.getNome());
+			std::string nome2(b.getNome());
+			std::transform(nome1.begin(), nome1.end(), nome1.begin(), ::toupper);
+			std::transform(nome2.begin(), nome2.end(), nome2.begin(), ::toupper);
+
+			return (nome1.compare(nome2) < 0);
+		});
 	
-	printf("Socket Criado.\n");
+	std::cout << "Socket Criado.\n";
 
 	// Bind the socket (ip address and port)
 	struct sockaddr_in hint;
@@ -150,31 +110,75 @@ int main()
 	// Main program loop
 	SOCKET clientSocket;
 
+	std::list<Client> clientes;
 	Client* c;
+	bool isLocOk = true;
 
 	// Ficar a espera de um cliente
 	while ((clientSocket = accept(listening, (struct sockaddr*)&client, &clientSize))) {
 		// Criar uma nova thread para o cliente aceite.
-		unsigned threadID;
-		c = calloc(1, sizeof(Client));
-		if (c != NULL)
+		if ((c = Client::CheckClient(&client, clientSocket)) == nullptr)
 		{
-			c->socket = clientSocket;
-			c->teatroVisitados = NULL;
-			c->tamTeatrosVisitados = 0;
-			c->hThread = (HANDLE)_beginthreadex(NULL, 0, &ClientSession, (Client*)c, 0, &threadID);
-			c->threadID = threadID;
+			char revMsg[1024];
+			std::string logMsg;
+			int bytesReceived = 0;
+			std::thread::id myid = std::this_thread::get_id();
+			std::stringstream ss{};
+			ss << myid;
+			std::string threadId = ss.str();
+
+			c = new Client(&client, clientSocket);
+			sendData(c, "500 LOC");
+
+			memset(revMsg, '\0', 1024); // Limpar a variavel
+
+			bytesReceived = recv(c->getSocket(), revMsg, 1024, 0); // Ficar à espera de uma resposta do cliente
+
+			// Erro inesperado do cliente
+			if (bytesReceived == SOCKET_ERROR) {
+				isLocOk = false;
+
+				logMsg = "Receive error! Thread: " + threadId; // Copiar a string para a variável
+
+				Log::WarningLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
+				break;
+			}
+
+			// Cliente desconectado
+			if (bytesReceived == 0) {
+				isLocOk = false;
+
+				logMsg = "Cliente Desconectado! Thread: " + threadId; // Copiar a string para a variável
+
+				Log::InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
+				break;
+			}
+
+			// A thread recebeu informação sem erro
+			if (bytesReceived > 0) {
+
+				c->setLocation(revMsg);
+
+				c->addClientToFile();
+			}
+		}
+		else
+		{
+			sendData(c, "100 OK");
+		}
+
+		if (c != NULL && isLocOk)
+		{
+			c->getThread() = std::thread(ClientSession, (Client*)c);
 			c = NULL;
 		}
 		else {
 			printf("Error to connect to client\n");
-			free(c);
+			delete c;
 		}
-	}
 
-	// Fechar os mutexes
-	CloseHandle(MutexCidades);
-	CloseHandle(MutexTeatros);
+		isLocOk = 1;
+	}
 
 	// Fechar o listening socket
 	closesocket(listening);

@@ -1,27 +1,40 @@
 #pragma once
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <mutex>
 #include <windows.h>
+#include <list>
 #include "Main.h"
 
-struct _Cidade
+class Cidade
 {
-	char nome[100];
+private:
+	static std::mutex m;
+	static std::list<Cidade> cidades;
+	std::string nome;
 	float lat;
 	float longi;
+public:
+	Cidade(std::string nome, float lat, float longi);
+	bool compareCidades(Cidade& a, Cidade& b);
+	static void InitCidades();
+	static std::list<Cidade>& getCidades() { return cidades; }
+	std::string setNome(std::string _nome) { return nome.assign(_nome); }
+	float setLat(float _lat) { return lat = _lat; }
+	float setLong(float _longi) { return longi = _longi; }
+	std::string getNome() { return nome; }
+	float getLat() { return lat; }
+	float getLong() { return longi; }
+	static std::mutex& getMutex() { return m; }
+
+	template<class InputIterator>
+	static InputIterator find(InputIterator first, InputIterator last, const std::string val)
+	{
+		while (first != last) {
+			if ((*first).getNome().compare(val) == 0) return first;
+			++first;
+		}
+		return last;
+	}
 };
-
-typedef struct _Cidade Cidade;
-
-HANDLE MutexCidades;
-
-Cidade** cidades;
-int tamCidades;
-
-Cidade* Create_Cidade(char nome[], float lat, float longi);
-int binarySearchCidade(Cidade** arr, int l, int r, char loc[]);
-int compareCidades(const void* a, const void* b);
-Cidade** InitCidades();
-char* getCidadeNome(Cidade* c);
-float getLat(Cidade* c);
-float getLong(Cidade* c);
