@@ -170,475 +170,479 @@ void __stdcall ClientSession(Client* client) {
 
 				auto itA = Cidade::find(Cidade::getCidades().begin(), Cidade::getCidades().end(), client->getLocation()); // obter o index da cidade do cliente
 
-				lat = (*itA).getLat(); // Obter a latitude da cidade
-				longi = (*itA).getLong(); // Obter a longitude da cidade
+				//fazer if para se der Cidade::getCidades().end() nao entrar e dar erro
 
-				Teatro::InitTeatros(lat, longi); // Ler os teatros do ficheiro e guardar numa estrutura
-
-				int value = 0;
-				std::string str{};
-
-				logMsg = "A enviar teatros.... Thread: " + threadId; // Copiar a string para a variável
-
-				Log::InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
-
-				bool auxId;
-				// Enviar os teatros para o cliente
-				for (auto& teatro : Teatro::getTeatros())
+				if (itA != Cidade::getCidades().end())
 				{
-					/*-------Loop------*/
+					lat = (*itA).getLat(); // Obter a latitude da cidade
+					longi = (*itA).getLong(); // Obter a longitude da cidade
 
-					auxId = client->contains(client->getTeatrosVisitados(), teatro.getId());
+					Teatro::InitTeatros(lat, longi); // Ler os teatros do ficheiro e guardar numa estrutura
 
-					if (!auxId)
+					int value = 0;
+					std::string str{};
+
+					logMsg = "A enviar teatros.... Thread: " + threadId; // Copiar a string para a variável
+
+					Log::InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
+
+					bool auxId;
+					// Enviar os teatros para o cliente
+					for (auto& teatro : Teatro::getTeatros())
 					{
-						value = teatro.getId(); // Obter o id do teatro
+						/*-------Loop------*/
 
-						str.assign(std::to_string(value)); // Converter inteiro para string
+						auxId = client->contains(client->getTeatrosVisitados(), teatro.getId());
 
-						sendData(client, str); // Mandar dados para o cliente
-
-						ZeroMemory(revMsg, 1024);
-						bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-						if (bytesReceived == SOCKET_ERROR) {
-
-							logMsg = "Receive error! Thread: " + threadId;
-
-							Log::WarningLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived == 0) {
-
-							logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-							Log::InfoLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived > 0)
+						if (!auxId)
 						{
-							if (strcmp(revMsg, "100 OK") == 0) {
+							value = teatro.getId(); // Obter o id do teatro
 
-								sendData(client, teatro.getNome());
+							str.assign(std::to_string(value)); // Converter inteiro para string
 
-								ZeroMemory(revMsg, 1024);
-								bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+							sendData(client, str); // Mandar dados para o cliente
 
-								if (bytesReceived == SOCKET_ERROR) {
+							ZeroMemory(revMsg, 1024);
+							bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
 
-									logMsg = "Receive error! Thread: " + threadId;
+							if (bytesReceived == SOCKET_ERROR) {
 
-									Log::WarningLog(logMsg);
-									break;
-								}
+								logMsg = "Receive error! Thread: " + threadId;
 
-								if (bytesReceived == 0) {
-
-									logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-									Log::InfoLog(logMsg);
-									break;
-								}
-
-								if (bytesReceived > 0)
-								{
-									if (strcmp(revMsg, "100 OK") == 0) {
-
-										value = teatro.getEspetaculos();
-
-										str.assign(std::to_string(value)); // Converter inteiro para string
-
-										sendData(client, str);
-
-										ZeroMemory(revMsg, 1024);
-										bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-										if (bytesReceived == SOCKET_ERROR) {
-
-											logMsg = "Receive error! Thread: " + threadId;
-
-											Log::WarningLog(logMsg);
-											break;
-										}
-
-										if (bytesReceived == 0) {
-
-											logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-											Log::InfoLog(logMsg);
-											break;
-										}
-
-										if (bytesReceived > 0)
-										{
-											if (strcmp(revMsg, "100 OK") == 0) {
-
-												sendData(client, teatro.getLocalizacao());
-
-												ZeroMemory(revMsg, 1024);
-												bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-												if (bytesReceived == SOCKET_ERROR) {
-
-													logMsg = "Receive error! Thread: " + threadId;
-
-													Log::WarningLog(logMsg);
-													break;
-												}
-
-												if (bytesReceived == 0) {
-
-													logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-													Log::InfoLog(logMsg);
-													break;
-												}
-
-												if (bytesReceived > 0)
-												{
-													if (strcmp(revMsg, "100 OK") == 0) {
-
-														value = teatro.getVisitas();
-
-														str.assign(std::to_string(value)); // Converter inteiro para string
-
-														sendData(client, str);
-
-														ZeroMemory(revMsg, 1024);
-														bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-														if (bytesReceived == SOCKET_ERROR) {
-
-															logMsg = "Receive error! Thread: " + threadId;
-
-															Log::WarningLog(logMsg);
-															break;
-														}
-
-														if (bytesReceived == 0) {
-
-															logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-															Log::InfoLog(logMsg);
-															break;
-														}
-
-														if (bytesReceived > 0)
-														{
-															if (strcmp(revMsg, "100 OK") == 0) {
-
-
-															}
-														}
-													}
-													else {
-
-														logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-														Log::InfoLog(logMsg);
-													}
-												}
-											}
-											else {
-
-												logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-												Log::InfoLog(logMsg);
-											}
-										}
-									}
-									else {
-
-										logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-										Log::InfoLog(logMsg);
-									}
-								}
+								Log::WarningLog(logMsg);
+								break;
 							}
-							else {
 
-								logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+							if (bytesReceived == 0) {
+
+								logMsg = "Cliente Desconectado! Thread: " + threadId;
 
 								Log::InfoLog(logMsg);
+								break;
+							}
+
+							if (bytesReceived > 0)
+							{
+								if (strcmp(revMsg, "100 OK") == 0) {
+
+									sendData(client, teatro.getNome());
+
+									ZeroMemory(revMsg, 1024);
+									bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+									if (bytesReceived == SOCKET_ERROR) {
+
+										logMsg = "Receive error! Thread: " + threadId;
+
+										Log::WarningLog(logMsg);
+										break;
+									}
+
+									if (bytesReceived == 0) {
+
+										logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+										Log::InfoLog(logMsg);
+										break;
+									}
+
+									if (bytesReceived > 0)
+									{
+										if (strcmp(revMsg, "100 OK") == 0) {
+
+											value = teatro.getEspetaculos();
+
+											str.assign(std::to_string(value)); // Converter inteiro para string
+
+											sendData(client, str);
+
+											ZeroMemory(revMsg, 1024);
+											bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+											if (bytesReceived == SOCKET_ERROR) {
+
+												logMsg = "Receive error! Thread: " + threadId;
+
+												Log::WarningLog(logMsg);
+												break;
+											}
+
+											if (bytesReceived == 0) {
+
+												logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+												Log::InfoLog(logMsg);
+												break;
+											}
+
+											if (bytesReceived > 0)
+											{
+												if (strcmp(revMsg, "100 OK") == 0) {
+
+													sendData(client, teatro.getLocalizacao());
+
+													ZeroMemory(revMsg, 1024);
+													bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+													if (bytesReceived == SOCKET_ERROR) {
+
+														logMsg = "Receive error! Thread: " + threadId;
+
+														Log::WarningLog(logMsg);
+														break;
+													}
+
+													if (bytesReceived == 0) {
+
+														logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+														Log::InfoLog(logMsg);
+														break;
+													}
+
+													if (bytesReceived > 0)
+													{
+														if (strcmp(revMsg, "100 OK") == 0) {
+
+															value = teatro.getVisitas();
+
+															str.assign(std::to_string(value)); // Converter inteiro para string
+
+															sendData(client, str);
+
+															ZeroMemory(revMsg, 1024);
+															bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+															if (bytesReceived == SOCKET_ERROR) {
+
+																logMsg = "Receive error! Thread: " + threadId;
+
+																Log::WarningLog(logMsg);
+																break;
+															}
+
+															if (bytesReceived == 0) {
+
+																logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+																Log::InfoLog(logMsg);
+																break;
+															}
+
+															if (bytesReceived > 0)
+															{
+																if (strcmp(revMsg, "100 OK") == 0) {
+
+
+																}
+															}
+														}
+														else {
+
+															logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+															Log::InfoLog(logMsg);
+														}
+													}
+												}
+												else {
+
+													logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+													Log::InfoLog(logMsg);
+												}
+											}
+										}
+										else {
+
+											logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+											Log::InfoLog(logMsg);
+										}
+									}
+								}
+								else {
+
+									logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+									Log::InfoLog(logMsg);
+								}
+							}
+						}
+						/*-------Loop------*/
+					}
+
+					sendData(client, "END");
+
+					ZeroMemory(revMsg, 1024);
+					bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+					if (bytesReceived == SOCKET_ERROR) {
+
+						logMsg = "Receive error! Thread: " + threadId;
+
+						Log::WarningLog(logMsg);
+						break;
+					}
+
+					if (bytesReceived == 0) {
+
+						logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+						Log::InfoLog(logMsg);
+						break;
+					}
+
+					//Enviar o número de teatros que o cliente visitou
+					sendData(client, std::to_string(client->getTeatrosVisitados().size()));
+
+					ZeroMemory(revMsg, 1024);
+					bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+					if (bytesReceived == SOCKET_ERROR) {
+
+						logMsg = "Receive error! Thread: " + threadId;
+
+						Log::WarningLog(logMsg);
+						break;
+					}
+
+					if (bytesReceived == 0) {
+
+						logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+						Log::InfoLog(logMsg);
+						break;
+					}
+
+					std::vector<Teatro>::iterator teatro;
+					std::vector<Teatro>::iterator pEnd = Teatro::getTeatros().end();
+
+					// Enviar os teatros visitados pelo cliente
+					for (auto& i : client->getTeatrosVisitados())
+					{
+
+						teatro = std::find(Teatro::getTeatros().begin(), Teatro::getTeatros().end(), i);
+
+						if (teatro != pEnd)
+						{
+							value = (*teatro).getId(); // Obter o id do teatro
+
+							str.assign(std::to_string(value)); // Converter inteiro para string
+
+							sendData(client, str); // Mandar dados para o cliente
+
+							ZeroMemory(revMsg, 1024);
+							bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+							if (bytesReceived == SOCKET_ERROR) {
+
+								logMsg = "Receive error! Thread: " + threadId;
+
+								Log::WarningLog(logMsg);
+								break;
+							}
+
+							if (bytesReceived == 0) {
+
+								logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+								Log::InfoLog(logMsg);
+								break;
+							}
+
+							if (bytesReceived > 0)
+							{
+								if (strcmp(revMsg, "100 OK") == 0) {
+
+									sendData(client, (*teatro).getNome());
+
+									ZeroMemory(revMsg, 1024);
+									bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+									if (bytesReceived == SOCKET_ERROR) {
+
+										logMsg = "Receive error! Thread: " + threadId;
+
+										Log::WarningLog(logMsg);
+										break;
+									}
+
+									if (bytesReceived == 0) {
+
+										logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+										Log::InfoLog(logMsg);
+										break;
+									}
+
+									if (bytesReceived > 0)
+									{
+										if (strcmp(revMsg, "100 OK") == 0) {
+
+											value = (*teatro).getEspetaculos();
+
+											str.assign(std::to_string(value)); // Converter inteiro para string
+
+											sendData(client, str);
+
+											ZeroMemory(revMsg, 1024);
+											bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+											if (bytesReceived == SOCKET_ERROR) {
+
+												logMsg = "Receive error! Thread: " + threadId;
+
+												Log::WarningLog(logMsg);
+												break;
+											}
+
+											if (bytesReceived == 0) {
+
+												logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+												Log::InfoLog(logMsg);
+												break;
+											}
+
+											if (bytesReceived > 0)
+											{
+												if (strcmp(revMsg, "100 OK") == 0) {
+
+													sendData(client, (*teatro).getLocalizacao());
+
+													ZeroMemory(revMsg, 1024);
+													bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+													if (bytesReceived == SOCKET_ERROR) {
+
+														logMsg = "Receive error! Thread: " + threadId;
+
+														Log::WarningLog(logMsg);
+														break;
+													}
+
+													if (bytesReceived == 0) {
+
+														logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+														Log::InfoLog(logMsg);
+														break;
+													}
+
+													if (bytesReceived > 0)
+													{
+														if (strcmp(revMsg, "100 OK") == 0) {
+
+															value = (*teatro).getVisitas();
+
+															str.assign(std::to_string(value)); // Converter inteiro para string
+
+															sendData(client, str);
+
+															ZeroMemory(revMsg, 1024);
+															bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+															if (bytesReceived == SOCKET_ERROR) {
+
+																logMsg = "Receive error! Thread: " + threadId;
+
+																Log::WarningLog(logMsg);
+																break;
+															}
+
+															if (bytesReceived == 0) {
+
+																logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+																Log::InfoLog(logMsg);
+																break;
+															}
+
+															if (bytesReceived > 0)
+															{
+																if (strcmp(revMsg, "100 OK") == 0) {
+
+
+																}
+															}
+														}
+														else {
+
+															logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+															Log::InfoLog(logMsg);
+														}
+													}
+												}
+												else {
+
+													logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+													Log::InfoLog(logMsg);
+												}
+											}
+										}
+										else {
+
+											logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+											Log::InfoLog(logMsg);
+										}
+									}
+								}
+								else {
+
+									logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+									Log::InfoLog(logMsg);
+								}
 							}
 						}
 					}
-					/*-------Loop------*/
-				}
 
-				sendData(client, "END");
-
-				ZeroMemory(revMsg, 1024);
-				bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-				if (bytesReceived == SOCKET_ERROR) {
-
-					logMsg = "Receive error! Thread: " + threadId;
-
-					Log::WarningLog(logMsg);
-					break;
-				}
-
-				if (bytesReceived == 0) {
-
-					logMsg = "Cliente Desconectado! Thread: " + threadId;
+					logMsg = "Teatros enviados. Thread: " + threadId;
 
 					Log::InfoLog(logMsg);
-					break;
-				}
 
-				//Enviar o número de teatros que o cliente visitou
-				sendData(client, std::to_string(client->getTeatrosVisitados().size()));
-
-				ZeroMemory(revMsg, 1024);
-				bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-				if (bytesReceived == SOCKET_ERROR) {
-
-					logMsg = "Receive error! Thread: " + threadId;
-
-					Log::WarningLog(logMsg);
-					break;
-				}
-
-				if (bytesReceived == 0) {
-
-					logMsg = "Cliente Desconectado! Thread: " + threadId;
+					// Limpar a estrutura de teatros
+					logMsg = "A limpar estrutura de teatros. Thread: " + threadId;
 
 					Log::InfoLog(logMsg);
-					break;
-				}
 
-				std::vector<Teatro>::iterator teatro;
-				std::vector<Teatro>::iterator pEnd = Teatro::getTeatros().end();
+					// Limpar a estrutura de teatros
+					Teatro::getTeatros().clear();
+					Teatro::getTeatros().shrink_to_fit();
 
-				// Enviar os teatros visitados pelo cliente
-				for (auto& i : client->getTeatrosVisitados())
-				{
+					logMsg = "Estrutura de teatros limpa com sucesso. Thread: " + threadId;
 
-					teatro = std::find(Teatro::getTeatros().begin(), Teatro::getTeatros().end(), i);
+					Log::InfoLog(logMsg);
 
-					if (teatro != pEnd)
-					{
-						value = (*teatro).getId(); // Obter o id do teatro
+					sendData(client, "END");
 
-						str.assign(std::to_string(value)); // Converter inteiro para string
+					ZeroMemory(revMsg, 1024);
+					bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
 
-						sendData(client, str); // Mandar dados para o cliente
+					if (bytesReceived == SOCKET_ERROR) {
 
-						ZeroMemory(revMsg, 1024);
-						bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+						logMsg = "Receive error! Thread: " + threadId;
 
-						if (bytesReceived == SOCKET_ERROR) {
-
-							logMsg = "Receive error! Thread: " + threadId;
-
-							Log::WarningLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived == 0) {
-
-							logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-							Log::InfoLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived > 0)
-						{
-							if (strcmp(revMsg, "100 OK") == 0) {
-
-								sendData(client, (*teatro).getNome());
-
-								ZeroMemory(revMsg, 1024);
-								bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-								if (bytesReceived == SOCKET_ERROR) {
-
-									logMsg = "Receive error! Thread: " + threadId;
-
-									Log::WarningLog(logMsg);
-									break;
-								}
-
-								if (bytesReceived == 0) {
-
-									logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-									Log::InfoLog(logMsg);
-									break;
-								}
-
-								if (bytesReceived > 0)
-								{
-									if (strcmp(revMsg, "100 OK") == 0) {
-
-										value = (*teatro).getEspetaculos();
-
-										str.assign(std::to_string(value)); // Converter inteiro para string
-
-										sendData(client, str);
-
-										ZeroMemory(revMsg, 1024);
-										bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-										if (bytesReceived == SOCKET_ERROR) {
-
-											logMsg = "Receive error! Thread: " + threadId;
-
-											Log::WarningLog(logMsg);
-											break;
-										}
-
-										if (bytesReceived == 0) {
-
-											logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-											Log::InfoLog(logMsg);
-											break;
-										}
-
-										if (bytesReceived > 0)
-										{
-											if (strcmp(revMsg, "100 OK") == 0) {
-
-												sendData(client, (*teatro).getLocalizacao());
-
-												ZeroMemory(revMsg, 1024);
-												bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-												if (bytesReceived == SOCKET_ERROR) {
-
-													logMsg = "Receive error! Thread: " + threadId;
-
-													Log::WarningLog(logMsg);
-													break;
-												}
-
-												if (bytesReceived == 0) {
-
-													logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-													Log::InfoLog(logMsg);
-													break;
-												}
-
-												if (bytesReceived > 0)
-												{
-													if (strcmp(revMsg, "100 OK") == 0) {
-
-														value = (*teatro).getVisitas();
-
-														str.assign(std::to_string(value)); // Converter inteiro para string
-
-														sendData(client, str);
-
-														ZeroMemory(revMsg, 1024);
-														bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-														if (bytesReceived == SOCKET_ERROR) {
-
-															logMsg = "Receive error! Thread: " + threadId;
-
-															Log::WarningLog(logMsg);
-															break;
-														}
-
-														if (bytesReceived == 0) {
-
-															logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-															Log::InfoLog(logMsg);
-															break;
-														}
-
-														if (bytesReceived > 0)
-														{
-															if (strcmp(revMsg, "100 OK") == 0) {
-
-
-															}
-														}
-													}
-													else {
-
-														logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-														Log::InfoLog(logMsg);
-													}
-												}
-											}
-											else {
-
-												logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-												Log::InfoLog(logMsg);
-											}
-										}
-									}
-									else {
-
-										logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-										Log::InfoLog(logMsg);
-									}
-								}
-							}
-							else {
-
-								logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-								Log::InfoLog(logMsg);
-							}
-						}
+						Log::WarningLog(logMsg);
+						break;
 					}
-				}
 
-				logMsg = "Teatros enviados. Thread: " + threadId;
+					if (bytesReceived == 0) {
 
-				Log::InfoLog(logMsg);
+						logMsg = "Cliente Desconectado! Thread: " + threadId;
 
-				// Limpar a estrutura de teatros
-				logMsg = "A limpar estrutura de teatros. Thread: " + threadId;
+						Log::InfoLog(logMsg);
+						break;
+					}
 
-				Log::InfoLog(logMsg);
-
-				// Limpar a estrutura de teatros
-				Teatro::getTeatros().clear();
-				Teatro::getTeatros().shrink_to_fit();
-
-				logMsg = "Estrutura de teatros limpa com sucesso. Thread: " + threadId;
-
-				Log::InfoLog(logMsg);
-
-				sendData(client, "END");
-
-				ZeroMemory(revMsg, 1024);
-				bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-				if (bytesReceived == SOCKET_ERROR) {
-					
-					logMsg = "Receive error! Thread: " + threadId;
-
-					Log::WarningLog(logMsg);
-					break;
-				}
-
-				if (bytesReceived == 0) {
-					
-					logMsg = "Cliente Desconectado! Thread: " + threadId;
+					logMsg = "Pedido teatro finalizado. Thread: " + threadId;
 
 					Log::InfoLog(logMsg);
-					break;
 				}
-				
-				logMsg = "Pedido teatro finalizado. Thread: " + threadId;
-
-				Log::InfoLog(logMsg);
-				
 			}
 
 			// Se fizer um pedido de COMPRA
@@ -672,350 +676,356 @@ void __stdcall ClientSession(Client* client) {
 
 				auto itA = Cidade::find(Cidade::getCidades().begin(), Cidade::getCidades().end(), client->getLocation()); // obter o index da cidade do cliente
 
-				lat = (*itA).getLat(); // Obter a latitude da cidade
-				longi = (*itA).getLong(); // Obter a longitude da cidade
+				//fazer if para se der Cidade::getCidades().end() nao entrar e dar erro
 
-				Teatro::InitTeatros(lat, longi); // Ler os teatros do ficheiro e guardar numa estrutura
-				
-				int value = 0;
-				std::string str{};
-
-				logMsg = "A enviar teatros.... Thread: " + threadId;
-
-				Log::InfoLog(logMsg);
-
-				int auxId = -1;
-				int isSair = 0;
-				int isVisitado = 0;
-				int isInTeatro = 0;
-
-				// Enviar os teatros para o cliente
-				for (auto &teatro : Teatro::getTeatros())
+				if (itA != Cidade::getCidades().end())
 				{
-					/*-------Loop------*/
 
-					auxId = client->contains(client->getTeatrosVisitados(), teatro.getId());
+					lat = (*itA).getLat(); // Obter a latitude da cidade
+					longi = (*itA).getLong(); // Obter a longitude da cidade
 
-					if (!auxId)
+					Teatro::InitTeatros(lat, longi); // Ler os teatros do ficheiro e guardar numa estrutura
+
+					int value = 0;
+					std::string str{};
+
+					logMsg = "A enviar teatros.... Thread: " + threadId;
+
+					Log::InfoLog(logMsg);
+
+					int auxId = -1;
+					int isSair = 0;
+					int isVisitado = 0;
+					int isInTeatro = 0;
+
+					// Enviar os teatros para o cliente
+					for (auto& teatro : Teatro::getTeatros())
 					{
-						value = teatro.getId();
+						/*-------Loop------*/
 
-						str.assign(std::to_string(value)); // Converter inteiro para string
+						auxId = client->contains(client->getTeatrosVisitados(), teatro.getId());
 
-						sendData(client, str);
-
-						ZeroMemory(revMsg, 1024);
-						bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-						if (bytesReceived == SOCKET_ERROR) {
-							
-							logMsg = "Receive error! Thread: " + threadId;
-
-							Log::WarningLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived == 0) {
-
-							logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-							Log::InfoLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived > 0)
+						if (!auxId)
 						{
-							if (strcmp(revMsg, "100 OK") == 0) {
+							value = teatro.getId();
 
-								sendData(client, teatro.getNome());
+							str.assign(std::to_string(value)); // Converter inteiro para string
 
-								ZeroMemory(revMsg, 1024);
-								bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+							sendData(client, str);
 
-								if (bytesReceived == SOCKET_ERROR) {
+							ZeroMemory(revMsg, 1024);
+							bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
 
-									logMsg = "Receive error! Thread: " + threadId;
+							if (bytesReceived == SOCKET_ERROR) {
 
-									Log::WarningLog(logMsg);
-									break;
-								}
+								logMsg = "Receive error! Thread: " + threadId;
 
-								if (bytesReceived == 0) {
-
-									logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-									Log::InfoLog(logMsg);
-									break;
-								}
-
-								if (bytesReceived > 0)
-								{
-									if (strcmp(revMsg, "100 OK") == 0) {
-
-										value = teatro.getEspetaculos();
-
-										str.assign(std::to_string(value)); // Converter inteiro para string
-
-										sendData(client, str);
-
-										ZeroMemory(revMsg, 1024);
-										bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-										if (bytesReceived == SOCKET_ERROR) {
-											
-											logMsg = "Receive error! Thread: " + threadId;
-
-											Log::WarningLog(logMsg);
-											break;
-										}
-
-										if (bytesReceived == 0) {
-											
-											logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-											Log::InfoLog(logMsg);
-											break;
-										}
-
-										if (bytesReceived > 0)
-										{
-											if (strcmp(revMsg, "100 OK") == 0) {
-
-												sendData(client, teatro.getLocalizacao());
-
-												ZeroMemory(revMsg, 1024);
-												bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-												if (bytesReceived == SOCKET_ERROR) {
-													
-													logMsg = "Receive error! Thread: " + threadId;
-
-													Log::WarningLog(logMsg);
-													break;
-												}
-
-												if (bytesReceived == 0) {
-													
-													logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-													Log::InfoLog(logMsg);
-													break;
-												}
-
-												if (bytesReceived > 0)
-												{
-													if (strcmp(revMsg, "100 OK") == 0) {
-
-														value = teatro.getVisitas();
-
-														str.assign(std::to_string(value)); // Converter inteiro para string
-
-														sendData(client, str);
-
-														ZeroMemory(revMsg, 1024);
-														bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-														if (bytesReceived == SOCKET_ERROR) {
-															
-															logMsg = "Receive error! Thread: " + threadId;
-
-															Log::WarningLog(logMsg);
-															break;
-														}
-
-														if (bytesReceived == 0) {
-															
-															logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-															Log::InfoLog(logMsg);
-															break;
-														}
-
-														if (bytesReceived > 0)
-														{
-															if (strcmp(revMsg, "100 OK") == 0) {
-
-
-
-															}
-														}
-													}
-													else {
-														
-														logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-														Log::InfoLog(logMsg);
-													}
-												}
-											}
-											else {
-												
-												logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-												Log::InfoLog(logMsg);
-											}
-										}
-									}
-									else {
-										
-										logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
-
-										Log::InfoLog(logMsg);
-									}
-								}
+								Log::WarningLog(logMsg);
+								break;
 							}
-							else {
-								
-								logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+							if (bytesReceived == 0) {
+
+								logMsg = "Cliente Desconectado! Thread: " + threadId;
 
 								Log::InfoLog(logMsg);
+								break;
 							}
-						}
-					}
-					/*-------Loop------*/
-				}
 
-				logMsg = "Teatros enviados. Thread: " + threadId;
-
-				Log::InfoLog(logMsg);
-
-				sendData(client, "END");
-
-				// À espera de uma resposta do cliente a dizer que recebeu os teatros
-				ZeroMemory(revMsg, 1024);
-				bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-				if (bytesReceived == SOCKET_ERROR) {
-					
-					logMsg = "Receive error! Thread: " + threadId;
-
-					Log::WarningLog(logMsg);
-					break;
-				}
-
-				if (bytesReceived == 0) {
-
-					logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-					Log::InfoLog(logMsg);
-					break;
-				}
-
-				if (bytesReceived > 0)
-				{
-					if (strcmp(revMsg, "100 OK") == 0) {
-
-						sendData(client, "100 OK");
-					
-						// Eperar a resposta do id do teatro do cliente
-						ZeroMemory(revMsg, 1024);
-						bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
-
-						if (bytesReceived == SOCKET_ERROR) {
-							
-							logMsg = "Receive error! Thread: " + threadId;
-
-							Log::WarningLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived == 0) {
-							
-							logMsg = "Cliente Desconectado! Thread: " + threadId;
-
-							Log::InfoLog(logMsg);
-							break;
-						}
-
-						if (bytesReceived > 0)
-						{
-							int id = 0;
-
-							id = atoi(revMsg); // Converter string para inteiro
-
-							// Se a resposta for -1 então significa que o cliente quis voltar para o menu principal
-							// Senão atualiza as visitas do respetivo teatro
-							if (id != -1)
+							if (bytesReceived > 0)
 							{
+								if (strcmp(revMsg, "100 OK") == 0) {
 
-								auxId = client->contains(client->getTeatrosVisitados(), id); // Verifica se o cliente já visitou o teatro
+									sendData(client, teatro.getNome());
 
-								// Se auxId for 0 não visitou o teatro
-								// Senão visitou o teatro
-								if (!auxId) {
+									ZeroMemory(revMsg, 1024);
+									bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
 
-									// Verificar se o id que foi enviado está na estrutura de dados
-									// Se estiver continua senão manda um erro a dizer que não existe o teatro enviado
-									for (auto &i : Teatro::getTeatros())
-									{
-										if (i.getId() == id)
-										{
-											isInTeatro = 1;
-											break;
-										}
+									if (bytesReceived == SOCKET_ERROR) {
+
+										logMsg = "Receive error! Thread: " + threadId;
+
+										Log::WarningLog(logMsg);
+										break;
 									}
 
-									// Se o teatro estiver na estrutura então adiciona nos teatros visitados e incrementa as visitas no ficheiro
-									if (isInTeatro)
-									{
+									if (bytesReceived == 0) {
 
-										client->getTeatrosVisitados().push_back(id);
-
-										logMsg = "Escolha recebida com sucesso. Thread: " + threadId;
+										logMsg = "Cliente Desconectado! Thread: " + threadId;
 
 										Log::InfoLog(logMsg);
+										break;
+									}
 
-										updateVisitas(Teatro::getTeatros(), id); // Atualiza o ficheiro teatros.csv
-										client->UpdateClient();
+									if (bytesReceived > 0)
+									{
+										if (strcmp(revMsg, "100 OK") == 0) {
+
+											value = teatro.getEspetaculos();
+
+											str.assign(std::to_string(value)); // Converter inteiro para string
+
+											sendData(client, str);
+
+											ZeroMemory(revMsg, 1024);
+											bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+											if (bytesReceived == SOCKET_ERROR) {
+
+												logMsg = "Receive error! Thread: " + threadId;
+
+												Log::WarningLog(logMsg);
+												break;
+											}
+
+											if (bytesReceived == 0) {
+
+												logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+												Log::InfoLog(logMsg);
+												break;
+											}
+
+											if (bytesReceived > 0)
+											{
+												if (strcmp(revMsg, "100 OK") == 0) {
+
+													sendData(client, teatro.getLocalizacao());
+
+													ZeroMemory(revMsg, 1024);
+													bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+													if (bytesReceived == SOCKET_ERROR) {
+
+														logMsg = "Receive error! Thread: " + threadId;
+
+														Log::WarningLog(logMsg);
+														break;
+													}
+
+													if (bytesReceived == 0) {
+
+														logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+														Log::InfoLog(logMsg);
+														break;
+													}
+
+													if (bytesReceived > 0)
+													{
+														if (strcmp(revMsg, "100 OK") == 0) {
+
+															value = teatro.getVisitas();
+
+															str.assign(std::to_string(value)); // Converter inteiro para string
+
+															sendData(client, str);
+
+															ZeroMemory(revMsg, 1024);
+															bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+															if (bytesReceived == SOCKET_ERROR) {
+
+																logMsg = "Receive error! Thread: " + threadId;
+
+																Log::WarningLog(logMsg);
+																break;
+															}
+
+															if (bytesReceived == 0) {
+
+																logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+																Log::InfoLog(logMsg);
+																break;
+															}
+
+															if (bytesReceived > 0)
+															{
+																if (strcmp(revMsg, "100 OK") == 0) {
+
+
+
+																}
+															}
+														}
+														else {
+
+															logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+															Log::InfoLog(logMsg);
+														}
+													}
+												}
+												else {
+
+													logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+													Log::InfoLog(logMsg);
+												}
+											}
+										}
+										else {
+
+											logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+											Log::InfoLog(logMsg);
+										}
 									}
 								}
-								else
-									isVisitado = 1; // Marcar que o teatro já foi visitado
+								else {
+
+									logMsg = "Erro de protocolo de comunicaçâo! Thread: " + threadId;
+
+									Log::InfoLog(logMsg);
+								}
 							}
-							else
-								isSair = 1; // Marcar que o cliente quer voltar ao menu principal
+						}
+						/*-------Loop------*/
+					}
+
+					logMsg = "Teatros enviados. Thread: " + threadId;
+
+					Log::InfoLog(logMsg);
+
+					sendData(client, "END");
+
+					// À espera de uma resposta do cliente a dizer que recebeu os teatros
+					ZeroMemory(revMsg, 1024);
+					bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+					if (bytesReceived == SOCKET_ERROR) {
+
+						logMsg = "Receive error! Thread: " + threadId;
+
+						Log::WarningLog(logMsg);
+						break;
+					}
+
+					if (bytesReceived == 0) {
+
+						logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+						Log::InfoLog(logMsg);
+						break;
+					}
+
+					if (bytesReceived > 0)
+					{
+						if (strcmp(revMsg, "100 OK") == 0) {
+
+							sendData(client, "100 OK");
+
+							// Eperar a resposta do id do teatro do cliente
+							ZeroMemory(revMsg, 1024);
+							bytesReceived = recv(client->getSocket(), revMsg, 1024, 0);
+
+							if (bytesReceived == SOCKET_ERROR) {
+
+								logMsg = "Receive error! Thread: " + threadId;
+
+								Log::WarningLog(logMsg);
+								break;
+							}
+
+							if (bytesReceived == 0) {
+
+								logMsg = "Cliente Desconectado! Thread: " + threadId;
+
+								Log::InfoLog(logMsg);
+								break;
+							}
+
+							if (bytesReceived > 0)
+							{
+								int id = 0;
+
+								id = atoi(revMsg); // Converter string para inteiro
+
+								// Se a resposta for -1 então significa que o cliente quis voltar para o menu principal
+								// Senão atualiza as visitas do respetivo teatro
+								if (id != -1)
+								{
+
+									auxId = client->contains(client->getTeatrosVisitados(), id); // Verifica se o cliente já visitou o teatro
+
+									// Se auxId for 0 não visitou o teatro
+									// Senão visitou o teatro
+									if (!auxId) {
+
+										// Verificar se o id que foi enviado está na estrutura de dados
+										// Se estiver continua senão manda um erro a dizer que não existe o teatro enviado
+										for (auto& i : Teatro::getTeatros())
+										{
+											if (i.getId() == id)
+											{
+												isInTeatro = 1;
+												break;
+											}
+										}
+
+										// Se o teatro estiver na estrutura então adiciona nos teatros visitados e incrementa as visitas no ficheiro
+										if (isInTeatro)
+										{
+
+											client->getTeatrosVisitados().push_back(id);
+
+											logMsg = "Escolha recebida com sucesso. Thread: " + threadId;
+
+											Log::InfoLog(logMsg);
+
+											updateVisitas(Teatro::getTeatros(), id); // Atualiza o ficheiro teatros.csv
+											client->UpdateClient();
+										}
+									}
+									else
+										isVisitado = 1; // Marcar que o teatro já foi visitado
+								}
+								else
+									isSair = 1; // Marcar que o cliente quer voltar ao menu principal
+							}
 						}
 					}
-				}
 
-				logMsg = "A limpar estrutura de teatros. Thread: " + threadId;
-
-				Log::InfoLog(logMsg);
-
-				// Limpar a estrutura de teatros
-				Teatro::getTeatros().clear();
-				Teatro::getTeatros().shrink_to_fit();
-
-				logMsg = "Estrutura de teatros limpa com sucesso. Thread: " + threadId;
-
-				Log::InfoLog(logMsg);
-
-				// Voltar para o menu principal
-				if (isSair)
-				{
-					sendData(client, "300 LEFT");
-
-					logMsg = "Pedido de compra cancelado. Thread: " + threadId;
+					logMsg = "A limpar estrutura de teatros. Thread: " + threadId;
 
 					Log::InfoLog(logMsg);
-				}
-				// Teatro visitado ou não encontrado
-				else if(isVisitado || !isInTeatro)
-				{
-					sendData(client, "404 NOT FOUND");
 
-					logMsg = "Pedido de compra invalido. Thread: " + threadId;
+					// Limpar a estrutura de teatros
+					Teatro::getTeatros().clear();
+					Teatro::getTeatros().shrink_to_fit();
 
-					Log::InfoLog(logMsg);
-				}
-				// Incrementação das visitas ao respetivo teatro
-				else
-				{
-					sendData(client, "100 OK");
-
-					logMsg = "Pedido de compra finalizado. Thread: " + threadId;
+					logMsg = "Estrutura de teatros limpa com sucesso. Thread: " + threadId;
 
 					Log::InfoLog(logMsg);
+
+					// Voltar para o menu principal
+					if (isSair)
+					{
+						sendData(client, "300 LEFT");
+
+						logMsg = "Pedido de compra cancelado. Thread: " + threadId;
+
+						Log::InfoLog(logMsg);
+					}
+					// Teatro visitado ou não encontrado
+					else if (isVisitado || !isInTeatro)
+					{
+						sendData(client, "404 NOT FOUND");
+
+						logMsg = "Pedido de compra invalido. Thread: " + threadId;
+
+						Log::InfoLog(logMsg);
+					}
+					// Incrementação das visitas ao respetivo teatro
+					else
+					{
+						sendData(client, "100 OK");
+
+						logMsg = "Pedido de compra finalizado. Thread: " + threadId;
+
+						Log::InfoLog(logMsg);
+					}
 				}
 			}
 

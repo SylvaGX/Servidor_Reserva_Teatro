@@ -6,17 +6,6 @@ std::list<Cidade> Cidade::cidades{};
 Cidade::Cidade(std::string nome, float lat, float longi) :
 	nome(nome), lat(lat), longi(longi) {}
 
-bool Cidade::compareCidades(Cidade& a, Cidade& b)
-{
-
-	std::string nome1{};
-	std::string nome2{};
-	std::transform(a.getNome().begin(), a.getNome().end(), nome1.begin(), ::toupper);
-	std::transform(b.getNome().begin(), b.getNome().end(), nome2.begin(), ::toupper);
-
-	
-	return (nome1.compare(nome2) < 0);
-}
 
 /**
 * Função para ler o ficheiro das cidades e guardar num array de estruturas de cidades

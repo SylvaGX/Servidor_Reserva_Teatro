@@ -2134,3 +2134,293 @@ Wed May  4 18:33:46 2022
  [Info]: Pedido teatro finalizado. Thread: 25840
 Wed May  4 18:34:16 2022
  [Warning]: Receive error! Thread: 25840
+Fri May  6 19:32:48 2022
+ [Info]: Cliente Desconectado! Thread: 26856
+Fri May  6 19:33:29 2022
+ [Info]: Cliente atualizado com sucesso. Thread: 18528
+Fri May  6 19:33:29 2022
+ [Info]: User connected. Thread: 17968
+Fri May  6 19:33:38 2022
+ [Info]: Pedido teatro. Thread: 17968
+Fri May  6 19:33:38 2022
+ [Info]: A obter a localizacao. Thread: 17968
+Fri May  6 21:14:07 2022
+ [Warning]: Receive error! Thread: 24800
+Fri May  6 21:17:06 2022
+ [Warning]: Receive error! Thread: 13656
+Fri May  6 21:18:40 2022
+ [Warning]: Receive error! Thread: 732
+Fri May  6 21:19:46 2022
+ [Info]: Cliente atualizado com sucesso. Thread: 732
+Fri May  6 21:19:46 2022
+ [Info]: User connected. Thread: 29564
+Fri May  6 21:19:48 2022
+ [Info]: Pedido teatro. Thread: 29564
+Fri May  6 21:19:48 2022
+ [Info]: A obter a localizacao. Thread: 29564
+Fri May  6 21:19:48 2022
+ [Info]: A enviar teatros.... Thread: 29564
+Fri May  6 21:19:49 2022
+ [Info]: Teatros enviados. Thread: 29564
+Fri May  6 21:19:49 2022
+ [Info]: A limpar estrutura de teatros. Thread: 29564
+Fri May  6 21:19:49 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 29564
+Fri May  6 21:19:49 2022
+ [Info]: Pedido teatro finalizado. Thread: 29564
+Fri May  6 21:19:52 2022
+ [Info]: Cliente Desconectado! Thread: 29564
+Fri May  6 21:23:33 2022
+ [Info]: User connected. Thread: 14024
+Fri May  6 21:23:36 2022
+ [Info]: Cliente Desconectado! Thread: 14024
+Fri May  6 21:23:48 2022
+ [Info]: Cliente atualizado com sucesso. Thread: 13224
+Fri May  6 21:23:48 2022
+ [Info]: User connected. Thread: 8036
+Fri May  6 21:23:53 2022
+ [Info]: Pedido teatro. Thread: 8036
+Fri May  6 21:23:53 2022
+ [Info]: A obter a localizacao. Thread: 8036
+Fri May  6 21:23:53 2022
+ [Info]: A enviar teatros.... Thread: 8036
+Fri May  6 21:23:54 2022
+ [Info]: Teatros enviados. Thread: 8036
+Fri May  6 21:23:54 2022
+ [Info]: A limpar estrutura de teatros. Thread: 8036
+Fri May  6 21:23:54 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 8036
+Fri May  6 21:23:54 2022
+ [Info]: Pedido teatro finalizado. Thread: 8036
+Fri May  6 21:24:25 2022
+ [Info]: Cliente Desconectado! Thread: 8036
+Fri May  6 21:25:00 2022
+ [Info]: User connected. Thread: 13196
+Fri May  6 21:25:01 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:25:01 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:01 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:01 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:03 2022
+ [Info]: Escolha recebida com sucesso. Thread: 13196
+Fri May  6 21:25:03 2022
+ [Info]: A incrementar o numero de visitados. Thread: 13196
+Fri May  6 21:25:03 2022
+ [Info]: A atualizar o cliente... Thread: 13196
+Fri May  6 21:25:03 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:03 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:03 2022
+ [Info]: Pedido de compra finalizado. Thread: 13196
+Fri May  6 21:25:04 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:25:04 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:04 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:05 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: Escolha recebida com sucesso. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: A incrementar o numero de visitados. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: A atualizar o cliente... Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: Pedido de compra finalizado. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: Pedido teatro. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:06 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:07 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:07 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:07 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:07 2022
+ [Info]: Pedido teatro finalizado. Thread: 13196
+Fri May  6 21:25:18 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:25:18 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:18 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:18 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:21 2022
+ [Info]: Escolha recebida com sucesso. Thread: 13196
+Fri May  6 21:25:21 2022
+ [Info]: A incrementar o numero de visitados. Thread: 13196
+Fri May  6 21:25:21 2022
+ [Info]: A atualizar o cliente... Thread: 13196
+Fri May  6 21:25:21 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:21 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:21 2022
+ [Info]: Pedido de compra finalizado. Thread: 13196
+Fri May  6 21:25:22 2022
+ [Info]: Pedido teatro. Thread: 13196
+Fri May  6 21:25:22 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:22 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:23 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:23 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:23 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:23 2022
+ [Info]: Pedido teatro finalizado. Thread: 13196
+Fri May  6 21:25:30 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:25:30 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:30 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:30 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:34 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:34 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:34 2022
+ [Info]: Pedido de compra invalido. Thread: 13196
+Fri May  6 21:25:37 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:25:37 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:37 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:38 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:45 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:45 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:45 2022
+ [Info]: Pedido de compra cancelado. Thread: 13196
+Fri May  6 21:25:45 2022
+ [Info]: Pedido teatro. Thread: 13196
+Fri May  6 21:25:45 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:45 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:46 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:46 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:46 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:46 2022
+ [Info]: Pedido teatro finalizado. Thread: 13196
+Fri May  6 21:25:51 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:25:51 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:25:51 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:25:52 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:25:59 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:25:59 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:25:59 2022
+ [Info]: Pedido de compra invalido. Thread: 13196
+Fri May  6 21:26:04 2022
+ [Info]: Pedido teatro. Thread: 13196
+Fri May  6 21:26:04 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:26:04 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:26:05 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:26:05 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:26:05 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:26:05 2022
+ [Info]: Pedido teatro finalizado. Thread: 13196
+Fri May  6 21:26:08 2022
+ [Info]: Pedido compra. Thread: 13196
+Fri May  6 21:26:08 2022
+ [Info]: A obter a localizacao. Thread: 13196
+Fri May  6 21:26:08 2022
+ [Info]: A enviar teatros.... Thread: 13196
+Fri May  6 21:26:09 2022
+ [Info]: Teatros enviados. Thread: 13196
+Fri May  6 21:26:14 2022
+ [Info]: A limpar estrutura de teatros. Thread: 13196
+Fri May  6 21:26:14 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 13196
+Fri May  6 21:26:14 2022
+ [Info]: Pedido de compra cancelado. Thread: 13196
+Fri May  6 21:26:17 2022
+ [Info]: Cliente Desconectado! Thread: 13196
+Fri May  6 21:27:14 2022
+ [Info]: Cliente atualizado com sucesso. Thread: 13224
+Fri May  6 21:27:14 2022
+ [Info]: User connected. Thread: 15864
+Fri May  6 21:27:16 2022
+ [Info]: Cliente Desconectado! Thread: 15864
+Fri May  6 21:27:18 2022
+ [Info]: User connected. Thread: 24220
+Fri May  6 21:27:21 2022
+ [Info]: Cliente Desconectado! Thread: 24220
+Fri May  6 21:36:50 2022
+ [Info]: User connected. Thread: 8756
+Fri May  6 21:36:55 2022
+ [Info]: Cliente Desconectado! Thread: 8756
+Fri May  6 21:37:17 2022
+ [Info]: Cliente atualizado com sucesso. Thread: 18740
+Fri May  6 21:37:17 2022
+ [Info]: User connected. Thread: 29952
+Fri May  6 21:37:20 2022
+ [Info]: Pedido compra. Thread: 29952
+Fri May  6 21:37:20 2022
+ [Info]: A obter a localizacao. Thread: 29952
+Fri May  6 21:37:21 2022
+ [Info]: A enviar teatros.... Thread: 29952
+Fri May  6 21:37:21 2022
+ [Info]: Teatros enviados. Thread: 29952
+Fri May  6 21:37:22 2022
+ [Info]: Escolha recebida com sucesso. Thread: 29952
+Fri May  6 21:37:22 2022
+ [Info]: A incrementar o numero de visitados. Thread: 29952
+Fri May  6 21:37:22 2022
+ [Info]: A atualizar o cliente... Thread: 29952
+Fri May  6 21:37:22 2022
+ [Info]: A limpar estrutura de teatros. Thread: 29952
+Fri May  6 21:37:22 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 29952
+Fri May  6 21:37:22 2022
+ [Info]: Pedido de compra finalizado. Thread: 29952
+Fri May  6 21:37:23 2022
+ [Info]: Pedido teatro. Thread: 29952
+Fri May  6 21:37:23 2022
+ [Info]: A obter a localizacao. Thread: 29952
+Fri May  6 21:37:23 2022
+ [Info]: A enviar teatros.... Thread: 29952
+Fri May  6 21:37:24 2022
+ [Info]: Teatros enviados. Thread: 29952
+Fri May  6 21:37:24 2022
+ [Info]: A limpar estrutura de teatros. Thread: 29952
+Fri May  6 21:37:24 2022
+ [Info]: Estrutura de teatros limpa com sucesso. Thread: 29952
+Fri May  6 21:37:24 2022
+ [Info]: Pedido teatro finalizado. Thread: 29952
+Fri May  6 21:37:28 2022
+ [Info]: Cliente Desconectado! Thread: 29952

@@ -129,37 +129,48 @@ int main()
 
 			c = new Client(&client, clientSocket);
 			sendData(c, "500 LOC");
+			bool isLocNotOK = true;
 
-			memset(revMsg, '\0', 1024); // Limpar a variavel
+			while (isLocNotOK)
+			{
+				memset(revMsg, '\0', 1024); // Limpar a variavel
 
-			bytesReceived = recv(c->getSocket(), revMsg, 1024, 0); // Ficar à espera de uma resposta do cliente
+				bytesReceived = recv(c->getSocket(), revMsg, 1024, 0); // Ficar à espera de uma resposta do cliente
 
-			// Erro inesperado do cliente
-			if (bytesReceived == SOCKET_ERROR) {
-				isLocOk = false;
+				// Erro inesperado do cliente
+				if (bytesReceived == SOCKET_ERROR) {
+					isLocOk = false;
 
-				logMsg = "Receive error! Thread: " + threadId; // Copiar a string para a variável
+					logMsg = "Receive error! Thread: " + threadId; // Copiar a string para a variável
 
-				Log::WarningLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
-				break;
-			}
+					Log::WarningLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
+					break;
+				}
 
-			// Cliente desconectado
-			if (bytesReceived == 0) {
-				isLocOk = false;
+				// Cliente desconectado
+				if (bytesReceived == 0) {
+					isLocOk = false;
 
-				logMsg = "Cliente Desconectado! Thread: " + threadId; // Copiar a string para a variável
+					logMsg = "Cliente Desconectado! Thread: " + threadId; // Copiar a string para a variável
 
-				Log::InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
-				break;
-			}
+					Log::InfoLog(logMsg); // Fazer log da variável para um ficheiro e para o terminal
+					break;
+				}
 
-			// A thread recebeu informação sem erro
-			if (bytesReceived > 0) {
+				// A thread recebeu informação sem erro
+				if (bytesReceived > 0) {
 
-				c->setLocation(revMsg);
+					if (Cidade::contains(Cidade::getCidades(), revMsg)) {
+						c->setLocation(revMsg);
 
-				c->addClientToFile();
+						c->addClientToFile();
+
+						isLocNotOK = false;
+						sendData(c, "100 OK");
+					}
+					else
+						sendData(c, "404 NOT FOUND");
+				}
 			}
 		}
 		else

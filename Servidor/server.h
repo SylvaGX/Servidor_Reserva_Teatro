@@ -10,7 +10,8 @@
 #include "Cliente.h"
 #include "Teatro.h"
 #define TRUE 1
-#define DS_TEST_PORT 80
+//#define DS_TEST_PORT 80
+#define DS_TEST_PORT 45370
 
 #pragma comment (lib, "ws2_32.lib")
 #pragma warning(disable : 4996)
