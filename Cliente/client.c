@@ -42,8 +42,7 @@ int main(int argc, char* argv[])
 	}
 
 	// create the socket  address (ip address and port)
-//	server.sin_addr.s_addr = inet_addr("25.58.1.108");
-	server.sin_addr.s_addr = inet_addr("148.63.161.37");
+	server.sin_addr.s_addr = inet_addr("25.58.1.108");
 	server.sin_family = AF_INET;
 	//server.sin_port = htons(80); //porta 80
 	server.sin_port = htons(45370); 
