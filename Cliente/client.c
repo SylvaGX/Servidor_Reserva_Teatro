@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	char  x;
 	unsigned int tamT = 0;
 	memset(local,'\0',50);
-
+	
 	int c;
 	
 	// Initialise winsock
@@ -33,7 +33,6 @@ int main(int argc, char* argv[])
 		printf("Failed. Error Code : %d", WSAGetLastError());
 		return 1;
 	}
-
 	
 	//Create a socket
 	s = socket(AF_INET, SOCK_STREAM, 0);
@@ -43,10 +42,12 @@ int main(int argc, char* argv[])
 	}
 
 	// create the socket  address (ip address and port)
-	server.sin_addr.s_addr = inet_addr("25.58.1.108");
-	server.sin_family = AF_INET; 
-	server.sin_port = htons(80); //porta 80
-
+//	server.sin_addr.s_addr = inet_addr("25.58.1.108");
+	server.sin_addr.s_addr = inet_addr("148.63.161.37");
+	server.sin_family = AF_INET;
+	//server.sin_port = htons(80); //porta 80
+	server.sin_port = htons(45370); 
+	
 	//Connect to remote server
 	ws_result = connect(s, (struct sockaddr*)&server, sizeof(server));
 	if (ws_result < 0)
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
 			scanf("%[a-zA-Z -]", local);//expressão regular para todos os caracteres de a a z, Espaço e - 
 			while ((c = getchar()) != '\n' && c != EOF); //clear "Enters"
 			system("cls");
-			
+
 			//Envia a localizacao que a pessoa escreveu
 			ws_result = send(s, local, strlen(local), 0);
 			if (ws_result < 0)//caso de erro (nao enviou localizacao)
@@ -75,7 +76,35 @@ int main(int argc, char* argv[])
 				cont = 0;
 
 			}
+			int confloc = 1;
+			while (confloc){
+				ZeroMemory(strRec, 1024);
+				bytesReceived = recv(s, strRec, 1024, 0); //receive 
+				if (bytesReceived == SOCKET_ERROR) {
+					printf("\nReceive error!\n");
+					cont = 0;
+				}
 
+				if (bytesReceived > 0) {
+					if (strcmp(strRec, "100 OK") == 0) {//caso da cidade estar no ficheiro
+						confloc = 0;
+					}
+					if (strcmp(strRec, "404 NOT FOUND") == 0) {//caso da cidade não estar no ficheiro
+						printf("Insira a sua Localizacao(Existe um ficheiro com todas as cidades):\n->");
+						scanf("%[a-zA-Z -]", local);//expressão regular para todos os caracteres de a a z, Espaço e - 
+						while ((c = getchar()) != '\n' && c != EOF); //clear "Enters"
+						system("cls");
+
+						ws_result = send(s, local, strlen(local), 0);
+						if (ws_result < 0)//caso de erro (nao enviou localizacao)
+						{
+							cont = 0;
+
+						}
+					}
+				}
+			}
+		
 		}
 	}
 

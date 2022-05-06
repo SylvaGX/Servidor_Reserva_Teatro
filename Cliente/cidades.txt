@@ -1,0 +1,345 @@
+Lisboa
+Sintra
+Vila Nova de Gaia
+Porto
+Braga
+Matosinhos
+Amadora
+Almada
+Oeiras
+Gondomar
+Guimaraes
+Odivelas
+Coimbra
+Vila Franca de Xira
+Maia
+Setubal
+Funchal
+Viseu
+Valongo
+Viana do Castelo
+Paredes
+Vila do Conde
+Torres Vedras
+Aveiro
+Queluz
+Mafra
+Penafiel
+Loule
+Ponta Delgada
+Moita
+Faro
+Povoa de Varzim
+Palmela
+Santarem
+Figueira da Foz
+Felgueiras
+Pacos de Ferreira
+Castelo Branco
+Evora
+Portimao
+Pombal
+Marco de Canavezes
+Vila Real
+Covilha
+Caldas da Rainha
+Montijo
+Rio Tinto
+Fafe
+Sesimbra
+Amora
+Vila Verde
+Lousada
+Corroios
+Ourem
+Olhao
+Leiria
+Ponte de Lima
+Santa Cruz
+Guarda
+Chaves
+Tomar
+Ilhavo
+Trofa
+Mafamude
+Ermezinde
+Silves
+Torres Novas
+Beja
+Agualva
+Camara de Lobos
+Angra do Heroismo
+Braganca
+Esposende
+Ribeira Grande
+Espinho
+Lagos
+Anadia
+Benavente
+Massama
+Estarreja
+Lamego
+Estoril
+Montemor-o-Velho
+Tavira
+Odemira
+Albergaria-a-Velha
+Portalegre
+Porto de Mos
+Mirandela
+Vizela
+Canico
+Oliveira do Bairro
+Vale de Cambra
+Arcos de Valdevez
+Povoa de Lanhoso
+Azambuja
+Sao Joao da Madeira
+Cacem
+Rio Maior
+Praia da Vitoria
+Elvas
+Baiao
+Cinfaes
+Entroncamento
+Celorico de Basto
+Alfena
+Soure
+Moncao
+Vila Real de Santo Antonio
+Amares
+Sacavem
+Lousa
+Alcochete
+Montemor-o-Novo
+Peso da Regua
+Condeixa-a-Nova
+Sao Pedro do Sul
+Ponte de Sor
+Cabeceiras de Basto
+Quarteira
+Serta
+Macedo de Cavaleiros
+Serpa
+Castro Daire
+Penacova
+Moura
+Nazare
+Horta
+Falagueira
+Cadaval
+Estremoz
+Sines
+Valenca
+Gouveia
+Nelas
+Gafanha da Nazare
+Arruda dos Vinhos
+Ribeira Brava
+Vila Pouca de Aguiar
+Ansiao
+Miranda do Corvo
+Alcacer do Sal
+Vieira do Minho
+Mira
+Satao
+Arcozelo
+Sever do Vouga
+Tabua
+Alijo
+Vendas Novas
+Costa de Caparica
+Obidos
+Calheta
+Resende
+Vila Franca do Campo
+Reguengos de Monsaraz
+Valadares
+Sao Bras de Alportel
+Murtosa
+Moimenta da Beira
+Sobral de Monte Agraco
+Trancoso
+Carregal do Sal
+Idanha-a-Nova
+Pinhel
+Melgaco
+Vinhais
+Almargem
+Aver-o-Mar
+Ponta do Sol
+Ferreira do Zezere
+Torre de Moncorvo
+Campo Maior
+Argoncilhe
+Vila Vicosa
+Proenca-a-Nova
+Tarouca
+Penalva do Castelo
+Sao Joao da Pesqueira
+Santana
+Alpiarca
+Celorico da Beira
+Joane
+Mondim de Basto
+Miranda do Douro
+Nisa
+Almodovar
+Arraiolos
+Santa Marta de Penaguiao
+Vila Nova da Barquinha
+Vila Nova de Foz Coa
+Casteloes de Cepeda
+Alvaiazere
+Poiares
+Castro Verde
+Mertola
+Terras de Bouro
+Almeida
+Redondo
+Castro Marim
+Ribeira de Pena
+Portel
+Carrazeda de AnciÃ£es
+Sabrosa
+Tabuaco
+Povoacao
+Armamar
+Figueira de Castelo Rodrigo
+Sao Martinho
+Madalena
+Monchique
+Celeiroz
+Penela
+Murca
+Vidigueira
+Aljezur
+Alandroal
+Olival
+Viana do Alentejo
+Oleiros
+Penamacor
+Vila do Porto
+Vila de Porto Santo
+Aguiar da Beira
+Golega
+Riachos
+Velas
+Ourique
+Vila do Bispo
+Vila Nova de Paiva
+Terrujem
+Alfandega da Fe
+Sousel
+Fornos de Algodres
+Mora
+Caranguejeira
+Nordeste
+Cuba
+Real
+Pampilhosa da Serra
+Lajes
+Vimioso
+Avis
+Mesao Frio
+Valpacos
+Santa Cruz da Graciosa
+Gois
+Vila Nova de Milfontes
+Constancia
+Sardoal
+Arcozelo
+Lorvao
+Pedrogao Grande
+Freixo de Espada A  Cinta
+Calheta
+Armacao de Pera
+Vila Velha de Rodao
+Marvao
+Canas de Senhorim
+Tramagal
+Vila de Rei
+Manteigas
+Riba de Ave
+Fronteira
+Castelo de Vide
+Sao Roque do Pico
+Monforte
+Valado de Frades
+Fermentelos
+Castanheira de Pera
+Arronches
+Sao Vicente
+Trouxemil
+Ferreiros
+Carvoeiro
+Mourao
+Alvito
+Barrancos
+Caminha
+Boticas
+Barcelos
+Loures
+Santo Tirso
+Famalicao
+Cartaxo
+Fundao
+Oliveira de Azemeis
+Ovar
+Lagoa
+Albufeira
+Agueda
+Peniche
+Borba
+Marinha Grande
+Salvaterra de Magos
+Barreiro
+Cascais
+Ponte da Barca
+Amarante
+Aljustrel
+Alcobaca
+Oliveira do Hospital
+Abrantes
+Santiago do Cacem
+Cantanhede
+Grandola
+Mangualde
+Arouca
+Feira
+Seia
+Coruche
+Chamusca
+Crato
+Belmonte
+Vagos
+Tondela
+Arganil
+Gaviao
+Santa Comba Dao
+Mogadouro
+Paredes de Coura
+Seixal
+Alenquer
+Meda
+Vouzela
+Macao
+Alter do Chao
+Mortagua
+Bombarral
+Vila Nova de Cerveira
+Sabugal
+Almeirim
+Alcanena
+Mealhada
+Sernancelhe
+Batalha
+Figueiro dos Vinhos
+Vila Flor
+Castelo de Paiva
+Penedono
+Oliveira de Frades
+Montalegre
+Alcoutim
+Lourinha
+Ferreira do Alentejo
